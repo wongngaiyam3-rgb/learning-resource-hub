@@ -16,7 +16,7 @@
 所有資源連結於2026-10-29檢查，24個均回應HTTP 200。此檢查不代表原網站全部遊戲功能或身份驗證均已通過。
 
 ## GitHub Pages
-純靜態網站，無套件、無伺服器。將 Pages 設為 Deploy from a branch → main → /(root)。首次公開發布尚待擁有人確認公開可見度。
+純靜態網站，無套件、無伺服器。將 Pages 設為 Deploy from a branch → main → /(root)。擁有人已授權公開，Pages 已設定使用 main 分支根目錄。
 
 ## 本機預覽
 `python -m http.server 8000`，然後瀏覽 http://localhost:8000 。請勿直接以file://開啟，資源清單需要HTTP載入。
