@@ -1,0 +1,4 @@
+/prepared-release/
+/node_modules/
+*.tsbuildinfo
+.env*

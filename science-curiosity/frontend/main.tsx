@@ -1,0 +1,1 @@
+import React from 'react';import {createRoot} from 'react-dom/client';import Home from './Home';import './globals.css';createRoot(document.getElementById('root')!).render(<Home apiBase="https://nltqzuhubqhwtfxwuupr.supabase.co/functions/v1/xiaoke-science" homeHref="./" teacherHref="./teacher.html" apiHeaders={{'x-region':'ap-southeast-1'}}/>);
