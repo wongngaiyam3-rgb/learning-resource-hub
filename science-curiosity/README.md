@@ -1,9 +1,9 @@
 # 科學好奇研究所
 
-此目錄為 GitHub Pages 學生介面。保留 4A–4C／1–25 號入口。
+學生入口：https://wongngaiyam3-rgb.github.io/learning-resource-hub/science-curiosity/
 
-Gemini 問答、內容審查及監察紀錄由伺服器處理；API 金鑰和教師密碼不會放入此儲存庫。
+教師監察站：https://wongngaiyam3-rgb.github.io/learning-resource-hub/science-curiosity/teacher.html
 
-教師監察站： https://science-curiosity-lab.ilovetsr089.chatgpt.site/teacher
+GitHub Pages提供介面；Gemini問答、雙向內容審查、速率限制及私人監察資料由Supabase後端處理。金鑰只存於Supabase Vault，不存於GitHub。見[MIGRATION.md](MIGRATION.md)。
 
-自動審查可能漏判或誤判，請由老師核對及跟進。網站公開並不改變 AI 供應商的使用條款。
+在此目錄安裝package.json的固定版本依賴後執行npm run check、npm test及npm run build；把prepared-release的產物發布到本目錄。後端部署入口為backend/index.ts，資料庫結構為backend/schema.sql。
