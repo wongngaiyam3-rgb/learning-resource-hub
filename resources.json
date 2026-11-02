@@ -430,5 +430,23 @@
     "checked": "2026-10-29",
     "embed": true,
     "pageTitle": "七巧板探險島｜老師觀察站"
+  },
+  {
+    "id": "multiplication-lab",
+    "url": "https://wongngaiyam3-rgb.github.io/multiply-step-classroom/multiplication-lab/",
+    "title": "乘法小步子｜數塊建造所",
+    "subject": "數學",
+    "unit": "乘法與除法",
+    "description": "兩位數乘兩位數及三位數，以數塊、互動進位和黃框直式逐步學習，配合手寫白板與獨立練習。",
+    "icon": "×",
+    "type": "小步子教學",
+    "minutes": "15–20",
+    "audience": "student",
+    "grade": "小四",
+    "featured": true,
+    "status": "available",
+    "checked": "2026-11-02",
+    "embed": true,
+    "pageTitle": "乘法小步子｜數塊建造所"
   }
 ]
