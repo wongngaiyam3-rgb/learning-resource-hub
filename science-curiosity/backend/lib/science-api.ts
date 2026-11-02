@@ -81,7 +81,7 @@ async function handleScienceApiCore(request:Request,env:ScienceEnv,fetcher:typeo
   if(!configured(env)){const answer=DEMOS[question];if(!answer)return json({error:'目前是示範模式，請先選擇下方的問題。',code:'demo_only'},503);await record({status:'allowed',category:'safe',stage:'demo',reason:'預先編寫的示範解說',answer:JSON.stringify(answer)});return json({answer,mode:'demo'});}
   // Do not trust client-supplied conversation history. Each question is independently screened.
   const inputDecision=await classify(env,question,fetcher);if(!inputDecision.allowed)return await blocked(inputDecision.category,inputDecision.reason);
-  if(!inputDecision.science){await record({status:'off_topic',category:'safe',stage:'input',reason:'非科學提問'});return json({error:'小科專門解答科學問題。可以問問植物、地球、光、電或大自然！',code:'off_topic'},422);}
+  if(!inputDecision.science){await record({status:'off_topic',category:'safe',stage:'input',reason:'非科學或數學提問'});return json({error:'小科解答科學與小學數學問題。可以問問大自然、地球、乘除、分數或圖形！',code:'off_topic'},422);}
   stage='generation';
   const answer=await geminiJSON(env,scienceInstruction,[{role:'user',parts:[{text:question}]}],answerSchema,1600,fetcher);
   if(!['explanation','example','followup'].every(k=>typeof answer[k]==='string'&&String(answer[k]).trim()&&String(answer[k]).length<=1600))throw new SafetyUnavailable();

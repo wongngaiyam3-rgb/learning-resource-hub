@@ -1,18 +1,22 @@
 import { handleScienceApi, type ScienceEnv } from './lib/science-api.ts';
 import type { MonitorStore } from './lib/monitor-store.ts';
 export const ORIGIN='https://wongngaiyam3-rgb.github.io';
+// Published student sites only. Teacher operations remain GitHub-only.
+export const STUDENT_ORIGINS=new Set(["https://wongngaiyam3-rgb.github.io","https://tangram-island-classroom.ilovetsr089.chatgpt.site","https://rainforest-food-chain-quest.ilovetsr089.chatgpt.site","https://fraction-kitchen-lab.ilovetsr089.chatgpt.site","https://transmission-route-detective.ilovetsr089.chatgpt.site","https://moonlight-phase-lab.ilovetsr089.chatgpt.site","https://panda-quadrilateral-rescue.ilovetsr089.chatgpt.site","https://rhombus-group-discussions.ilovetsr089.chatgpt.site","https://divisibility-small-steps.ilovetsr089.chatgpt.site","https://number-card-divisibility.ilovetsr089.chatgpt.site","https://multiply-step-lab.ilovetsr089.chatgpt.site","https://lever-explorer.ilovetsr089.chatgpt.site","https://seasons-classroom-lab.ilovetsr089.chatgpt.site","https://candy-packaging-factory.ilovetsr089.chatgpt.site","https://day-night-detective-hk.ilovetsr089.chatgpt.site","https://microbial-postcards.ilovetsr089.chatgpt.site"]);
 const BASE='/functions/v1/xiaoke-science';
 function json(data:unknown,status=200){return new Response(JSON.stringify(data),{status,headers:{'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store'}});}
 export function makeHandler(getRuntime:()=>Promise<{env:ScienceEnv;store:MonitorStore}>,fetcher:typeof fetch=fetch){return async(request:Request)=>{
  const origin=request.headers.get('origin'),url=new URL(request.url);
  const path=url.pathname.replace(/^\/(?:functions\/v1\/)?xiaoke-science(?=\/|$)/,'')||'/';
+ const teacher=path.startsWith('/api/teacher/');
+ const allowed=!!origin&&(teacher?origin===ORIGIN:STUDENT_ORIGINS.has(origin));
  const headers=new Headers({'Cache-Control':'no-store','X-Content-Type-Options':'nosniff','Vary':'Origin'});
- if(origin===ORIGIN){headers.set('Access-Control-Allow-Origin',ORIGIN);headers.set('Access-Control-Allow-Methods','GET, POST, OPTIONS');headers.set('Access-Control-Allow-Headers','Content-Type, Authorization, x-region');headers.set('Access-Control-Max-Age','600');}
+ if(allowed){headers.set('Access-Control-Allow-Origin',origin!);headers.set('Access-Control-Allow-Methods','GET, POST, OPTIONS');headers.set('Access-Control-Allow-Headers','Content-Type, Authorization, x-region');headers.set('Access-Control-Max-Age','600');}
  let response:Response;
  try {
- if(origin && origin!==ORIGIN)response=json({error:'不允許此來源。'},403);
- else if(request.method==='OPTIONS')response=origin===ORIGIN?new Response(null,{status:204}):json({error:'不允許此來源。'},403);
- else if(request.method==='POST'&&origin!==ORIGIN)response=json({error:'請從科學問答網站操作。'},403);
+ if(origin && !allowed)response=json({error:'不允許此來源。'},403);
+ else if(request.method==='OPTIONS')response=allowed?new Response(null,{status:204}):json({error:'不允許此來源。'},403);
+ else if(request.method==='POST'&&!allowed)response=json({error:'請從學習問答網站操作。'},403);
  else if(!['/api/health','/api/config','/api/ask','/api/teacher/session','/api/teacher/events','/api/teacher/control'].includes(path))response=json({error:'找不到此操作。'},404);
  else if(path.startsWith('/api/teacher/')&&path!=='/api/teacher/session'&&!request.headers.get('authorization'))response=json({error:'請先登入教師監察站。'},401);
  else {
@@ -29,8 +33,9 @@ export function makeHandler(getRuntime:()=>Promise<{env:ScienceEnv;store:Monitor
  innerHeaders.delete('authorization');
  // Public browser origin was checked above; normalization preserves the core's
  // existing same-origin POST checks without permitting other browser origins.
- const normalized=new Request(ORIGIN+path+url.search,{method:request.method,headers:innerHeaders,body:['GET','HEAD'].includes(request.method)?undefined:request.body,duplex:'half'} as RequestInit);
- response=await handleScienceApi(normalized,{...runtime.env,STUDENT_ORIGIN:ORIGIN},fetcher,runtime.store);
+ const studentOrigin=allowed?origin!:ORIGIN;
+ const normalized=new Request(studentOrigin+path+url.search,{method:request.method,headers:innerHeaders,body:['GET','HEAD'].includes(request.method)?undefined:request.body,duplex:'half'} as RequestInit);
+ response=await handleScienceApi(normalized,{...runtime.env,STUDENT_ORIGIN:studentOrigin},fetcher,runtime.store);
  if(path==='/api/teacher/session'&&request.method==='POST'&&response.ok){const cookie=response.headers.get('set-cookie');const token=cookie?.match(/^science_teacher=([^;]+)/)?.[1];response=token?json({ok:true,token,expiresIn:28800}):json({error:'登入暫時未能完成。'},503);}
  }
  }
