@@ -1,0 +1,305 @@
+{
+  "date": "2026-11-02",
+  "api": "Supabase xiaoke-science",
+  "studentPages": [
+    {
+      "repo": "day-night-detective",
+      "path": "index.html",
+      "url": "https://wongngaiyam3-rgb.github.io/day-night-detective/",
+      "title": "日夜偵探",
+      "topic": "earth"
+    },
+    {
+      "repo": "microbial-postcards",
+      "path": "index.html",
+      "url": "https://wongngaiyam3-rgb.github.io/microbial-postcards/",
+      "title": "微生物明信片",
+      "topic": "microbes"
+    },
+    {
+      "repo": "seasons-classroom",
+      "path": "index.html",
+      "url": "https://wongngaiyam3-rgb.github.io/seasons-classroom/",
+      "title": "地球觀察站",
+      "topic": "earth"
+    },
+    {
+      "repo": "lever-explorer",
+      "path": "catapult.html",
+      "url": "https://wongngaiyam3-rgb.github.io/lever-explorer/catapult.html",
+      "title": "投石機任務",
+      "topic": "lever"
+    },
+    {
+      "repo": "lever-explorer",
+      "path": "index.html",
+      "url": "https://wongngaiyam3-rgb.github.io/lever-explorer/",
+      "title": "槓桿探索室",
+      "topic": "lever"
+    },
+    {
+      "repo": "lever-explorer",
+      "path": "practice.html",
+      "url": "https://wongngaiyam3-rgb.github.io/lever-explorer/practice.html",
+      "title": "生活挑戰",
+      "topic": "lever"
+    },
+    {
+      "repo": "lever-explorer",
+      "path": "rescue.html",
+      "url": "https://wongngaiyam3-rgb.github.io/lever-explorer/rescue.html",
+      "title": "槓桿救援挑戰",
+      "topic": "lever"
+    },
+    {
+      "repo": "multiply-step-classroom",
+      "path": "division-original/index.html",
+      "url": "https://wongngaiyam3-rgb.github.io/multiply-step-classroom/division-original/",
+      "title": "除法小白板",
+      "topic": "number"
+    },
+    {
+      "repo": "multiply-step-classroom",
+      "path": "index.html",
+      "url": "https://wongngaiyam3-rgb.github.io/multiply-step-classroom/",
+      "title": "數學冒險島",
+      "topic": "number"
+    },
+    {
+      "repo": "multiply-step-classroom",
+      "path": "step-multiply/index.html",
+      "url": "https://wongngaiyam3-rgb.github.io/multiply-step-classroom/step-multiply/",
+      "title": "一步一步乘法",
+      "topic": "number"
+    },
+    {
+      "repo": "number-card-divisibility",
+      "path": "docs/index.html",
+      "url": "https://wongngaiyam3-rgb.github.io/number-card-divisibility/",
+      "title": "數卡整除挑戰",
+      "topic": "number"
+    },
+    {
+      "repo": "divisibility-small-steps",
+      "path": "index.html",
+      "url": "https://wongngaiyam3-rgb.github.io/divisibility-small-steps/",
+      "title": "整除偵探",
+      "topic": "number"
+    },
+    {
+      "repo": "rhombus-detective",
+      "path": "classroom/index.html",
+      "url": "https://wongngaiyam3-rgb.github.io/rhombus-detective/classroom/",
+      "title": "菱形探究室",
+      "topic": "geometry"
+    },
+    {
+      "repo": "rhombus-detective",
+      "path": "index.html",
+      "url": "https://wongngaiyam3-rgb.github.io/rhombus-detective/",
+      "title": "菱形小偵探",
+      "topic": "geometry"
+    },
+    {
+      "repo": "panda-quadrilateral-rescue",
+      "path": "site/404.html",
+      "url": "https://wongngaiyam3-rgb.github.io/panda-quadrilateral-rescue/404.html",
+      "title": "熊貓四邊形救援隊",
+      "topic": "geometry"
+    },
+    {
+      "repo": "panda-quadrilateral-rescue",
+      "path": "site/index.html",
+      "url": "https://wongngaiyam3-rgb.github.io/panda-quadrilateral-rescue/",
+      "title": "熊貓四邊形救援隊",
+      "topic": "geometry"
+    },
+    {
+      "repo": "panda-quadrilateral-rescue",
+      "path": "site/journal/index.html",
+      "url": "https://wongngaiyam3-rgb.github.io/panda-quadrilateral-rescue/journal/",
+      "title": "熊貓四邊形救援隊",
+      "topic": "geometry"
+    },
+    {
+      "repo": "panda-quadrilateral-rescue",
+      "path": "site/map/index.html",
+      "url": "https://wongngaiyam3-rgb.github.io/panda-quadrilateral-rescue/map/",
+      "title": "熊貓四邊形救援隊",
+      "topic": "geometry"
+    },
+    {
+      "repo": "panda-quadrilateral-rescue",
+      "path": "site/quest/1/index.html",
+      "url": "https://wongngaiyam3-rgb.github.io/panda-quadrilateral-rescue/quest/1/",
+      "title": "熊貓四邊形救援隊",
+      "topic": "geometry"
+    },
+    {
+      "repo": "panda-quadrilateral-rescue",
+      "path": "site/quest/2/index.html",
+      "url": "https://wongngaiyam3-rgb.github.io/panda-quadrilateral-rescue/quest/2/",
+      "title": "熊貓四邊形救援隊",
+      "topic": "geometry"
+    },
+    {
+      "repo": "panda-quadrilateral-rescue",
+      "path": "site/quest/3/index.html",
+      "url": "https://wongngaiyam3-rgb.github.io/panda-quadrilateral-rescue/quest/3/",
+      "title": "熊貓四邊形救援隊",
+      "topic": "geometry"
+    },
+    {
+      "repo": "panda-quadrilateral-rescue",
+      "path": "site/quest/4/index.html",
+      "url": "https://wongngaiyam3-rgb.github.io/panda-quadrilateral-rescue/quest/4/",
+      "title": "熊貓四邊形救援隊",
+      "topic": "geometry"
+    },
+    {
+      "repo": "panda-quadrilateral-rescue",
+      "path": "site/quest/5/index.html",
+      "url": "https://wongngaiyam3-rgb.github.io/panda-quadrilateral-rescue/quest/5/",
+      "title": "熊貓四邊形救援隊",
+      "topic": "geometry"
+    },
+    {
+      "repo": "panda-quadrilateral-rescue",
+      "path": "site/quest/6/index.html",
+      "url": "https://wongngaiyam3-rgb.github.io/panda-quadrilateral-rescue/quest/6/",
+      "title": "熊貓四邊形救援隊",
+      "topic": "geometry"
+    },
+    {
+      "repo": "panda-quadrilateral-rescue",
+      "path": "site/quest/7/index.html",
+      "url": "https://wongngaiyam3-rgb.github.io/panda-quadrilateral-rescue/quest/7/",
+      "title": "熊貓四邊形救援隊",
+      "topic": "geometry"
+    },
+    {
+      "repo": "transmission-route-detective",
+      "path": "index.html",
+      "url": "https://wongngaiyam3-rgb.github.io/transmission-route-detective/",
+      "title": "傳播路線偵探",
+      "topic": "health"
+    },
+    {
+      "repo": "food-chain-detectives",
+      "path": "expedition/index.html",
+      "url": "https://wongngaiyam3-rgb.github.io/food-chain-detectives/expedition/",
+      "title": "食物鏈探險隊",
+      "topic": "ecology"
+    },
+    {
+      "repo": "food-chain-detectives",
+      "path": "expedition/island/index.html",
+      "url": "https://wongngaiyam3-rgb.github.io/food-chain-detectives/expedition/island/",
+      "title": "生態實驗島",
+      "topic": "ecology"
+    },
+    {
+      "repo": "food-chain-detectives",
+      "path": "forest-foodweb-explorer/index.html",
+      "url": "https://wongngaiyam3-rgb.github.io/food-chain-detectives/forest-foodweb-explorer/",
+      "title": "森間探險 · 森林食物鏈",
+      "topic": "ecology"
+    },
+    {
+      "repo": "food-chain-detectives",
+      "path": "forest-simulator/index.html",
+      "url": "https://wongngaiyam3-rgb.github.io/food-chain-detectives/forest-simulator/",
+      "title": "森之平衡",
+      "topic": "ecology"
+    },
+    {
+      "repo": "food-chain-detectives",
+      "path": "index.html",
+      "url": "https://wongngaiyam3-rgb.github.io/food-chain-detectives/",
+      "title": "食物鏈偵探隊",
+      "topic": "ecology"
+    },
+    {
+      "repo": "fraction-cake-lab",
+      "path": "index.html",
+      "url": "https://wongngaiyam3-rgb.github.io/fraction-cake-lab/",
+      "title": "分數料理研究所",
+      "topic": "fraction"
+    },
+    {
+      "repo": "rainforest-food-chain-quest",
+      "path": "docs/index.html",
+      "url": "https://wongngaiyam3-rgb.github.io/rainforest-food-chain-quest/",
+      "title": "雨林食物鏈探險隊 · Rainforest Field Club",
+      "topic": "ecology"
+    },
+    {
+      "repo": "rainforest-food-chain-quest",
+      "path": "docs/maps/index.html",
+      "url": "https://wongngaiyam3-rgb.github.io/rainforest-food-chain-quest/maps/",
+      "title": "海洋食物鏈探險隊 · Ocean Field Club",
+      "topic": "ecology"
+    },
+    {
+      "repo": "rainforest-food-chain-quest",
+      "path": "docs/materials.html",
+      "url": "https://wongngaiyam3-rgb.github.io/rainforest-food-chain-quest/materials.html",
+      "title": "動物材質觀察室 · 雨林食物鏈探險隊",
+      "topic": "ecology"
+    },
+    {
+      "repo": "rainforest-food-chain-quest",
+      "path": "docs/notebook/index.html",
+      "url": "https://wongngaiyam3-rgb.github.io/rainforest-food-chain-quest/notebook/",
+      "title": "我的探索筆記 · 四域探索學習護照",
+      "topic": "ecology"
+    },
+    {
+      "repo": "tangram-island",
+      "path": "index.html",
+      "url": "https://wongngaiyam3-rgb.github.io/tangram-island/",
+      "title": "七巧板探險島 · 16 關空間挑戰",
+      "topic": "geometry"
+    },
+    {
+      "repo": "learning-resource-hub",
+      "path": "index.html",
+      "url": "https://wongngaiyam3-rgb.github.io/learning-resource-hub/",
+      "title": "學習資源總站",
+      "topic": "general"
+    },
+    {
+      "repo": "day-night-detective",
+      "path": "candy-factory/index.html",
+      "url": "https://wongngaiyam3-rgb.github.io/day-night-detective/candy-factory/",
+      "title": "糖果包裝工廠",
+      "topic": "number"
+    }
+  ],
+  "standaloneAssistant": "https://wongngaiyam3-rgb.github.io/learning-resource-hub/science-curiosity/",
+  "status": "published",
+  "githubRepositories": 15,
+  "legacySitesVersions": 15,
+  "liveHtmlChecks": {
+    "passed": 39,
+    "total": 39
+  },
+  "tests": {
+    "backend": {
+      "passed": 34,
+      "failed": 0
+    },
+    "realScienceAnswer": true,
+    "realMathematicsAnswer": true,
+    "violenceBlocked": true,
+    "studentSwitchClearsSession": true,
+    "legacySiteConnectsToSupabase": true
+  },
+  "teacherMonitor": "https://wongngaiyam3-rgb.github.io/learning-resource-hub/science-curiosity/teacher.html",
+  "limitations": [
+    "Perplexity-hosted sites have no connected source-editing capability and remain unchanged.",
+    "Existing private Sites remain private.",
+    "Actual Hong Kong school-network reachability requires local verification.",
+    "Class, student number and site labels are self-reported, not verified identities."
+  ]
+}

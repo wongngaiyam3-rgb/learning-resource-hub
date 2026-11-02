@@ -5,7 +5,6 @@
   const script=document.currentScript;
   if(document.getElementById('xiaoke-universal-host'))return;
   const hiddenRoute=()=>/(?:^|\/)(?:teacher|admin)(?:\/|\.|$)/i.test(location.pathname)||/^#\/?(?:teacher|admin)/i.test(location.hash);
-  if(hiddenRoute())return;
   let siteLabel=script?.dataset.xiaokeSite||document.title.split(/[｜|·]/)[0]||'學習網站';
   const topic=script?.dataset.xiaokeTopic||'general';
   const biome=new URLSearchParams(location.search).get('map');
@@ -159,7 +158,13 @@
   document.addEventListener('click',event=>{const b=event.target.closest?.('button,a');if(b&&b.textContent.trim().length<=24&&/切換學生|更換學生|重新報到|登出|換位同學/.test(b.textContent))clearForHostSwitch();},true);
   document.addEventListener('change',event=>{if([...selectors,...numberSelectors].some(s=>event.target.matches?.(s)))clearForHostSwitch();},true);
   function placeLauncher(){
-    let top=12;const width=launcher.offsetWidth||140,right=window.innerWidth<650?10:16,left=innerWidth-right-width;
+    let top=12;const width=launcher.offsetWidth||140;let right=innerWidth<650?10:16;
+    const row=[...document.querySelectorAll('button,a,input,select,[role="button"]')].map(e=>e.getBoundingClientRect()).filter(r=>r.width>0&&r.height>0&&r.top<60&&r.bottom>12);
+    if(innerWidth>=900&&row.some(r=>r.right>innerWidth-right-width&&r.left<innerWidth-right)){
+      const edge=Math.min(...row.filter(r=>r.left>innerWidth*.45).map(r=>r.left));const candidate=edge-width-10;
+      if(Number.isFinite(edge)&&candidate>Math.max(320,innerWidth*.42)&&!row.some(r=>r.right>candidate&&r.left<edge-10))right=innerWidth-edge+10;
+    }
+    const left=innerWidth-right-width;launcher.style.right=right+'px';
     for(let i=0;i<8;i++){const hits=[...document.querySelectorAll('button,a,input,select,[role="button"]')].filter(e=>{const r=e.getBoundingClientRect();return r.width>0&&r.height>0&&r.top<240&&r.right>left&&r.left<innerWidth-right&&r.bottom>top&&r.top<top+48;});if(!hits.length)break;const next=Math.max(...hits.map(e=>e.getBoundingClientRect().bottom))+8;if(next===top||next>240)break;top=next;}
     launcher.style.top=top+'px';host.hidden=hiddenRoute();if(host.hidden&&panel.open)panel.close();
   }
