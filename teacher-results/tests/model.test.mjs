@@ -6,3 +6,5 @@ test('number names only map when exact recognizable class and student number',()
 test('filters distinguish students, unknown dates, tests',()=>{const rs=[{className:'4A',number:1,source:'tangram',kind:'教學',date:null},{className:'4B',number:2,source:'tangram',kind:'教學',date:'2026-11-03T00:00:00.000Z'}];assert.equal(filterRows(rs,{className:'4A',number:1}).length,1);assert.equal(filterRows(rs,{kind:'測試'}).length,0);assert.equal(filterRows(rs,{from:'2026-11-01'}).length,1)});
 test('learning completion is never independent mastery',()=>{assert.equal(evidence([{done:true}]).label,'已有學習成果');assert.equal(evidence([]).label,'尚無紀錄');assert.equal(evidence([{hints:1}]).label,'曾使用支援')});
 test('csv neutralizes formula injection and preserves quoted values',()=>{assert.equal(csvCell('=2+2'),'"\'=2+2"');assert.equal(csvCell('a"b'),'"a""b"')});
+
+test('Hong Kong end date includes local evening, excludes next day',()=>{const rs=[{date:'2026-11-03T15:30:00Z'},{date:'2026-11-03T16:01:00Z'}];assert.equal(filterRows(rs,{to:'2026-11-03'}).length,1)});
