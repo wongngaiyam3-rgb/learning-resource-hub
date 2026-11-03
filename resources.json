@@ -448,5 +448,20 @@
     "checked": "2026-11-02",
     "embed": true,
     "pageTitle": "乘法小步子｜數塊建造所"
+  },
+  {
+    "id": "p4-teacher-results",
+    "url": "https://wongngaiyam3-rgb.github.io/learning-resource-hub/teacher-results/",
+    "title": "學習足跡｜小四教師成果中心",
+    "subject": "科學",
+    "unit": "教師工具",
+    "description": "按班別、學號、數學或科學課題，唯讀彙整原網站學習成果、個人紀錄與CSV匯出。",
+    "icon": "📊",
+    "type": "教師成果總覽",
+    "audience": "teacher",
+    "grade": "小四",
+    "featured": true,
+    "status": "available",
+    "embed": false
   }
 ]
