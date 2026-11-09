@@ -106,7 +106,6 @@ progress::-moz-progress-bar{background:#0d8575}
 .board-head{display:flex;justify-content:space-between;gap:12px;align-items:start}
 .board-head p{margin-bottom:6px}
 .board-actions{display:flex;gap:7px;flex-wrap:wrap}
-.board-head code{font-size:1.08rem;letter-spacing:.06em;background:#e6f6f4;padding:3px 8px;border-radius:4px}
 .board-groups{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:18px 0}
 .group-card{display:block;text-align:left;color:var(--ink);padding:10px 12px;min-height:73px;border:1px solid var(--line);border-radius:9px;background:#f6fafc}
 button.group-card{border-color:#7ab4a9;background:#e6f8f4}
@@ -168,11 +167,9 @@ footer{border-top:1px solid var(--line);display:flex;justify-content:space-betwe
       <section class="panel" aria-labelledby="join-title">
         <div class="section-tag">學生作答</div>
         <h2 id="join-title">加入課堂</h2>
-        <p class="subtle">每組使用一部裝置，由一位組員代表提交。</p>
+        <p class="subtle">選擇組別便可開始。每組用一部裝置，由一位組員代表交卷。</p>
         <p class="notice" id="setup-note" hidden>雲端課堂尚未啟用。可先預覽 30 條題目及試答。</p>
         <form id="join-form">
-          <label for="room-input">課堂碼</label>
-          <input id="room-input" maxlength="10" autocapitalize="characters" spellcheck="false" autocomplete="off" placeholder="輸入老師提供的 10 位課堂碼" pattern="[a-fA-F0-9]{10}" required>
           <fieldset><legend>選擇組別</legend><div id="group-options" class="groups"></div></fieldset>
           <button type="submit" class="primary" id="join-button">開始作答 <span aria-hidden="true">→</span></button>
         </form>
@@ -214,7 +211,7 @@ footer{border-top:1px solid var(--line);display:flex;justify-content:space-betwe
     <div class="panel teacher-login">
       <div class="section-tag">教師入口</div>
       <h1 tabindex="-1">課堂管理</h1>
-      <p class="subtle">建立課堂後，把課堂碼或學生連結交給各組。</p>
+      <p class="subtle">把學生入口分享給各組。學生選擇組別後，會加入目前收卷的一輪。</p>
       <p id="teacher-setup-note" class="notice" hidden>雲端課堂尚未啟用。</p>
       <form id="teacher-login"><label for="teacher-password">教師密碼</label><div class="input-row"><input id="teacher-password" type="password" autocomplete="current-password" maxlength="100" required><button type="submit" class="primary" id="teacher-login-button">登入</button></div></form>
       <button type="button" class="ghost" id="teacher-logout" hidden>登出</button>
@@ -222,11 +219,11 @@ footer{border-top:1px solid var(--line);display:flex;justify-content:space-betwe
     </div>
     <div id="teacher-workspace" hidden>
       <section class="panel room-tools">
-        <form id="create-room"><label for="room-label">新課堂名稱</label><div class="input-row"><input id="room-label" placeholder="例如 6A 常識課" maxlength="40" required><button class="primary" type="submit">建立課堂</button></div></form>
+        <form id="create-room"><label for="room-label">新一輪的課堂名稱</label><div class="input-row"><input id="room-label" placeholder="例如 6A 常識課" maxlength="40" required><button class="primary" type="submit">開始新一輪</button></div><p class="tip">開始新一輪會停止目前一輪收卷，已交卷的紀錄會保留。</p></form>
         <div><label for="room-list">已建立的課堂</label><div class="input-row"><select id="room-list"><option value="">選擇課堂</option></select><button class="ghost" id="refresh-rooms" type="button">更新</button></div></div>
       </section>
       <div id="board" class="panel" hidden>
-        <div class="board-head"><div><div class="section-tag" id="board-state"></div><h2 id="board-name"></h2><p>課堂碼 <code id="board-code"></code></p><p id="board-count" class="subtle"></p></div><div class="board-actions"><button class="ghost" type="button" id="copy-link">複製學生連結</button><button class="ghost" type="button" id="refresh-board">更新成績</button><button class="ghost" type="button" id="close-room">停止收卷</button></div></div>
+        <div class="board-head"><div><div class="section-tag" id="board-state"></div><h2 id="board-name"></h2><p id="board-count" class="subtle"></p></div><div class="board-actions"><button class="ghost" type="button" id="copy-link">複製學生入口</button><button class="ghost" type="button" id="refresh-board">更新成績</button><button class="ghost" type="button" id="close-room">停止收卷</button></div></div>
         <p class="feedback" id="board-feedback" role="status"></p>
         <div id="board-groups" class="board-groups"></div>
         <details id="review"><summary>查看題目答案及解說</summary><ol id="review-list"></ol></details>
@@ -249,14 +246,17 @@ const groups = [1, 2, 3, 4, 5, 6];
 const $ = (id) => document.getElementById(id);
 const message = (id, text = "") => { $(id).textContent = text; };
 const url = new URL(location.href);
-const formatRoom = (value = "") => value.trim().toUpperCase();
-const roomPattern = /^[A-F0-9]{10}$/;
+if (url.searchParams.has("room")) {
+  url.searchParams.delete("room");
+  history.replaceState(null, "", url);
+}
 const errorText = {
   password: "教師密碼不正確。",
   rate: "嘗試次數過多，請稍候一分鐘再登入。",
   session: "教師登入已過期，請重新登入。",
   label: "請輸入 1 至 40 字的課堂名稱。",
-  room: "找不到這個課堂。請向老師核對課堂碼。",
+  room: "找不到這個課堂，請重新整理後再試。",
+  no_room: "目前沒有開放的小測。請等老師開始新一輪。",
   group: "請選擇第 1 至 6 組。",
   closed: "老師已停止收卷。請向老師查詢。",
   submitted: "這組已交卷。請核對組別，或向老師查詢。",
@@ -271,6 +271,7 @@ const illustrations = {
 let attempt;
 let teacherToken = "";
 let board;
+let openClassroom;
 let selectedGroup = null;
 let pending = false;
 const dateFormat = new Intl.DateTimeFormat("zh-HK", {timeZone:"Asia/Hong_Kong", dateStyle:"short", timeStyle:"short"});
@@ -373,12 +374,9 @@ for (const n of groups) {
 }
 $("setup-note").hidden = enabled;
 $("teacher-setup-note").hidden = enabled;
-$("room-input").disabled = !enabled;
 $("join-button").disabled = !enabled;
 $("teacher-password").disabled = !enabled;
 $("teacher-login-button").disabled = !enabled;
-const linkedRoom = formatRoom(url.searchParams.get("room") || "");
-if (roomPattern.test(linkedRoom)) $("room-input").value = linkedRoom;
 
 function goHome() {
   clearRoute();
@@ -395,10 +393,10 @@ if (url.hash === "#teacher") show("teacher", false);
 
 $("join-form").onsubmit = (event) => {
   event.preventDefault();
-  const room = formatRoom($("room-input").value);
   const group = Number(new FormData(event.currentTarget).get("group"));
-  if (!roomPattern.test(room) || !groups.includes(group)) return;
+  if (!groups.includes(group)) return;
   return task("join-feedback", async () => {
+    const {room} = await rpc("current");
     const draft = draftFor(room, group);
     const status = await rpc("join", {p_room:room, p_group:group, p_token:draft.token});
     attempt = {...draft, room, group, preview:false};
@@ -507,15 +505,21 @@ function showResult(score) {
 }
 
 function populateRooms(rooms, current = "") {
+  openClassroom = rooms.find((room) => !room.closed_at);
   const list = $("room-list");
   list.replaceChildren(new Option("選擇課堂", ""));
-  for (const room of rooms) list.add(new Option(room.label + " · " + room.code + (room.closed_at ? " · 已停止" : ""), room.code));
-  list.value = current;
+  for (const room of rooms) {
+    const status = room.closed_at ? "已停止" : "收卷中";
+    list.add(new Option(room.label + " · " + dateFormat.format(new Date(room.created_at)) + " · " + status, room.code));
+  }
+  const room = rooms.find((item) => item.code === current) || openClassroom || rooms[0];
+  list.value = room?.code || "";
+  return list.value;
 }
 
 async function refreshRooms(current) {
   const {rooms} = await rpc("list", {p_token:teacherToken});
-  populateRooms(rooms, current);
+  return populateRooms(rooms, current);
 }
 
 $("teacher-login").onsubmit = (event) => {
@@ -529,14 +533,16 @@ $("teacher-login").onsubmit = (event) => {
     $("teacher-login").hidden = true;
     $("teacher-logout").hidden = false;
     $("teacher-workspace").hidden = false;
-    populateRooms(rooms);
-    $("room-label").focus();
+    const current = populateRooms(rooms);
+    if (current) await loadBoard(current);
+    else $("room-label").focus();
   });
 };
 
 function resetTeacher() {
   teacherToken = "";
   board = null;
+  openClassroom = null;
   selectedGroup = null;
   $("board").hidden = true;
   $("teacher-workspace").hidden = true;
@@ -555,6 +561,10 @@ $("create-room").onsubmit = (event) => {
   event.preventDefault();
   return task("teacher-feedback", async () => {
     const label = $("room-label").value.trim();
+    if (!label) throw new Error(errorText.label);
+    if (openClassroom && !await confirmAction(
+      "開始新一輪？", "目前一輪會停止收卷，已交卷的紀錄會保留。", "開始新一輪"
+    )) return;
     const {room} = await rpc("create", {p_token:teacherToken, p_label:label});
     $("room-label").value = "";
     await loadBoard(room.code);
@@ -562,7 +572,10 @@ $("create-room").onsubmit = (event) => {
   });
 };
 
-$("refresh-rooms").onclick = () => task("teacher-feedback", () => refreshRooms(board?.room.code || ""));
+$("refresh-rooms").onclick = () => task("teacher-feedback", async () => {
+  const current = await refreshRooms(board?.room.code);
+  if (current) await loadBoard(current);
+});
 $("room-list").onchange = () => {
   const code = $("room-list").value;
   if (!code) {
@@ -592,7 +605,6 @@ $("copy-link").onclick = () => task("board-feedback", async () => {
   const student = new URL(location.href);
   student.hash = "";
   student.search = "";
-  student.searchParams.set("room", board.room.code);
   try {
     await navigator.clipboard.writeText(student.href);
     message("board-feedback", "已複製學生連結。");
@@ -606,7 +618,6 @@ function renderBoard() {
   $("board").hidden = false;
   message("board-state", room.closed_at ? "已停止收卷" : "收卷中");
   message("board-name", room.label);
-  message("board-code", room.code);
   message("board-count", "已交卷 " + submissions.length + " / 6 組");
   $("close-room").disabled = Boolean(room.closed_at);
   $("board-groups").replaceChildren();
