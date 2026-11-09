@@ -240,7 +240,7 @@ footer{border-top:1px solid var(--line);display:flex;justify-content:space-betwe
 <footer><span>科技天地 · 小六常識科</span><span>機械與生活 / 科技新里程</span></footer>
 <script>
 "use strict";
-const config = {"url": "", "key": ""};
+const config = {"url": "https://uoajxuxmaqhigxuhwpcs.supabase.co", "key": "sb_publishable_syzOuZdioB0Pec9UQ9HaSw_AvvUEA9X"};
 const questions = [{"topic": "能量的轉換", "text": "開動電風扇時，電能主要轉換成哪種能量，使扇葉轉動？", "options": ["光能", "動能", "化學能", "聲能"]}, {"topic": "能量的轉換", "text": "陽光照在太陽能板上，太陽能板為計算機供電。主要的能量轉換是甚麼？", "options": ["電能 → 光能", "熱能 → 動能", "光能 → 電能", "化學能 → 熱能"]}, {"topic": "能量的轉換", "text": "一輛電池玩具車開始前進。以下哪一項最能描述主要的能量轉換次序？", "options": ["電能 → 動能 → 化學能", "動能 → 光能 → 電能", "化學能 → 動能 → 電能", "化學能 → 電能 → 動能"]}, {"topic": "能量的轉換", "text": "拉開橡筋後放手，紙團向前飛出。橡筋儲存的彈性勢能主要轉換成紙團的甚麼能量？", "options": ["動能", "光能", "化學能", "電能"]}, {"topic": "能量的轉換", "text": "電熱水壺把水加熱。從加熱這個用途來看，哪項能量轉換最重要？", "options": ["電能 → 聲能", "化學能 → 熱能", "電能 → 熱能", "熱能 → 電能"]}, {"topic": "力與運動", "text": "一塊泥膠被手指壓扁。這最直接顯示力有甚麼作用？", "options": ["改變物體的質量", "改變物體的形狀", "改變物體的顏色", "改變物體的物料"]}, {"topic": "力與運動", "text": "足球本來向前滾動。小文從側面踢球，足球斜向滾走。這最直接顯示力可以怎樣影響運動？", "options": ["改變運動方向", "保持運動方向不變", "令運動中的物體必定停下", "令物體只能沿原方向加速"]}, {"topic": "力與運動", "text": "小組用彈簧秤拉動同一輛玩具車。若要探究拉力大小對小車運動的影響，應怎樣安排？", "options": ["每次換車，維持拉力相同", "同時改變拉力和桌面物料", "維持拉力相同，每次更換拉動方向", "只改變拉力大小，保持小車、桌面及拉動方向相同"]}, {"topic": "力與運動", "text": "磁鐵與鐵釘仍有一段距離，鐵釘已被吸向磁鐵。這顯示甚麼？", "options": ["磁力必須在接觸後才能作用", "磁力可以在物體沒有接觸時作用", "鐵釘移動全因桌面推動它", "鐵釘移動時沒有受到力"]}, {"topic": "摩擦力", "text": "同一木塊從同一斜面的同一位置滑下，接着分別在光滑桌面和毛巾上滑行。木塊在毛巾上滑得較短，最合理的解釋是甚麼？", "options": ["木塊在毛巾上較輕", "毛巾讓木塊受到較小的重力", "木塊和毛巾之間的摩擦力較大", "木塊在毛巾上受到向前的摩擦力而加速"]}, {"topic": "摩擦力", "text": "運動鞋的鞋底造有凹凸紋，主要有甚麼作用？", "options": ["減少鞋與地面的摩擦，方便滑行", "增加鞋所受的重力", "使鞋底離開地面", "增加鞋底與地面的摩擦，減少滑倒"]}, {"topic": "摩擦力", "text": "門鉸轉動時有摩擦聲。給門鉸加適量潤滑油，主要是為了甚麼？", "options": ["減少活動部分之間的摩擦", "增加活動部分之間的摩擦", "增加門鉸的承重", "改變門鉸的轉動方向"]}, {"topic": "摩擦力", "text": "小盒在水平桌面向右滑行。桌面對小盒的摩擦力指向哪個方向？", "options": ["向右", "向上", "向左", "向下"]}, {"topic": "斜面", "text": "甲、乙兩塊光滑木板通往同一高度的平台，甲較長、乙較短。沿板慢慢把同一箱貨推上去。忽略摩擦時，哪項正確？", "options": ["甲較省力，貨箱沿板移動的距離較短", "甲較省力，貨箱沿板移動的距離較長", "乙較省力，因為貨箱沿板移動的距離較短", "兩者所需的推力相同"], "figure": "ramp"}, {"topic": "斜面", "text": "下列哪個例子主要利用斜面，讓物件較容易移到較高位置？", "options": ["用斜台把手推車推上貨車", "用門把打開門", "用輪子把椅子移過房間", "用旗桿頂端的滑輪升旗"]}, {"topic": "斜面", "text": "小組想用彈簧秤比較不同斜度所需的拉力。哪一個做法較公平？", "options": ["斜度較大時，換一個較重的木塊", "每種斜度都使用不同物料的斜面", "每次以不同速度拉木塊", "用同一木塊和同一塊板，只調整斜度，沿斜面等速拉動"]}, {"topic": "滾子", "text": "古人把圓木放在大石下，再推動大石。圓木有甚麼作用？", "options": ["使大石重量減少", "把大石的運動方向固定為向上", "讓圓木滾動，減少搬運時的阻力", "增加大石與地面直接接觸的摩擦"]}, {"topic": "滾子", "text": "想比較圓棒作滾子能否省力，下列哪個測試最公平？", "options": ["用同一箱子和同一桌面，只比較加或不加滾子時拉動箱子所需的力", "用輕箱加滾子、重箱不加滾子，比較拉力", "加滾子時在光滑桌面，不加時在地氈上", "加滾子時用手推，不加時改用彈簧秤向上提"]}, {"topic": "槓桿", "text": "用長木棒撬起石頭，棒下方墊了一塊小木塊。槓桿的支點在哪裏？", "options": ["手握木棒的地方", "木棒與小木塊接觸的地方", "石頭的中心", "木棒接觸石頭的地方"], "figure": "lever"}, {"topic": "槓桿", "text": "用同一支撬棒撬同一塊石頭。如果手的位置不變，怎樣移動支點會較省力？", "options": ["移近手，遠離石頭", "移到木棒正中，一定最省力", "移到手的外側", "移近石頭，遠離手"]}, {"topic": "槓桿", "text": "用開瓶器撬開金屬瓶蓋，手應握在把手哪個位置較省力？", "options": ["最靠近瓶蓋的位置", "把手上的任何位置都一樣", "距離支點最遠的位置", "正對支點的位置"]}, {"topic": "滑輪", "text": "旗桿頂端的滑輪固定在桿上。小晴向下拉繩，旗幟向上升。這個定滑輪主要有甚麼作用？", "options": ["改變施力方向", "把所需的力減半", "讓旗幟升得比拉繩的距離長一倍", "同時減少拉力和拉繩距離"], "figure": "fixed"}, {"topic": "滑輪", "text": "怎樣從滑輪運作時的情況，辨認出它是動滑輪？", "options": ["拉繩時輪子會轉動", "滑輪的輪軸固定在天花板", "繩的一端可向下拉", "滑輪的輪軸會跟着重物一起升降"]}, {"topic": "滑輪", "text": "圖中的單個動滑輪由兩段繩承托。忽略摩擦和滑輪重量。重物重 60 牛頓，慢慢提起它需要多少拉力？", "options": ["15 牛頓", "30 牛頓", "60 牛頓", "120 牛頓"], "figure": "movable"}, {"topic": "滑輪", "text": "使用由兩段繩承托的單個理想動滑輪，把重物提升 20 厘米。應拉動繩端多長的距離？", "options": ["10 厘米", "20 厘米", "40 厘米", "60 厘米"]}, {"topic": "齒輪", "text": "兩個外齒輪直接互相咬合。左邊齒輪順時針轉動，右邊齒輪會怎樣？", "options": ["順時針轉動", "逆時針轉動", "保持靜止", "轉動方向只由齒輪大小決定"]}, {"topic": "科技發展與生活", "text": "學校使用視像通話，讓身處外地的同學參加小組討論。這最能說明科技發展帶來甚麼改變？", "options": ["可以跨越距離作即時溝通", "學生毋須輪流發言", "所有人都會有穩定的網絡", "小組毋須核對收到的資料"]}, {"topic": "科技發展與生活", "text": "學校改用感應燈，無人時會自動熄滅。想知道它是否節省用電，哪項證據最直接？", "options": ["詢問同學較喜歡哪種燈的外觀", "比較燈具的重量", "數一數兩種燈的開關按鈕", "在使用情況相近的時段，比較兩種照明方式的用電量"]}, {"topic": "科技與創新", "text": "小組要設計一輛能越過小障礙的模型車。第一次測試時，車輪卡住了。下一步最合適的是甚麼？", "options": ["只換上更鮮艷的車身顏色", "認定第一次的設計最合適，直接展示", "觀察卡住的原因，修改車輪或底盤，再用同一障礙測試", "同時改車輪、車身、跑道和障礙，再猜是哪個改動有效"]}, {"topic": "科技與創新", "text": "圖書館想讓雙手拿着書的人也能開門。下列哪個設計最直接切合這個需要？", "options": ["在門把上加上不同顏色的裝飾", "安裝偵測到有人接近便開啟的自動門", "把門把移到更高的位置", "加上一塊寫着「請用手推」的告示"]}];
 const total = questions.length;
 const enabled = Boolean(config.url && config.key);
@@ -253,6 +253,8 @@ const formatRoom = (value = "") => value.trim().toUpperCase();
 const roomPattern = /^[A-F0-9]{10}$/;
 const errorText = {
   password: "教師密碼不正確。",
+  rate: "嘗試次數過多，請稍候一分鐘再登入。",
+  session: "教師登入已過期，請重新登入。",
   label: "請輸入 1 至 40 字的課堂名稱。",
   room: "找不到這個課堂。請向老師核對課堂碼。",
   group: "請選擇第 1 至 6 組。",
@@ -267,7 +269,7 @@ const illustrations = {
   movable: ['繩子左端固定於天花板，繞過動滑輪下方，右端向上拉。重物掛於滑輪輪軸下方。', '<path d="M122 17h78" stroke="#536d80" stroke-width="4"/><circle cx="183" cy="72" r="24" fill="#bbebe1" stroke="#18766c" stroke-width="3"/><circle cx="183" cy="72" r="4" fill="#18766c"/><path d="M157 17v55a26 26 0 0 0 52 0V25" fill="none" stroke="#244761" stroke-width="3"/><circle cx="157" cy="17" r="4" fill="#244761"/><path d="M183 76v29" stroke="#244761" stroke-width="3"/><rect x="154" y="105" width="58" height="25" rx="4" fill="#ffd677" stroke="#966b27" stroke-width="2"/><path d="M227 49V26m-5 6 5-6 5 6" stroke="#18766c" stroke-width="2" fill="none"/><text x="239" y="38">拉繩</text><text x="164" y="122">重物</text>']
 };
 let attempt;
-let teacherPassword = "";
+let teacherToken = "";
 let board;
 let selectedGroup = null;
 let pending = false;
@@ -328,7 +330,11 @@ async function rpc(action, params = {}) {
   } catch {
     throw new Error("暫時未能連接雲端。請檢查網絡後再試。");
   }
-  if (result.error) throw new Error(errorText[result.error] || "請重新整理後再試。");
+  if (result.error) {
+    const error = new Error(errorText[result.error] || "請重新整理後再試。");
+    error.code = result.error;
+    throw error;
+  }
   return result;
 }
 
@@ -337,7 +343,12 @@ async function task(feedbackId, action) {
   pending = true;
   message(feedbackId);
   try { await action(); }
-  catch (error) { message(feedbackId, error.message); }
+  catch (error) {
+    if (error.code === "session") {
+      resetTeacher();
+      message("teacher-feedback", error.message);
+    } else message(feedbackId, error.message);
+  }
   finally { pending = false; }
 }
 
@@ -503,7 +514,7 @@ function populateRooms(rooms, current = "") {
 }
 
 async function refreshRooms(current) {
-  const {rooms} = await rpc("list", {p_password:teacherPassword});
+  const {rooms} = await rpc("list", {p_token:teacherToken});
   populateRooms(rooms, current);
 }
 
@@ -511,8 +522,9 @@ $("teacher-login").onsubmit = (event) => {
   event.preventDefault();
   return task("teacher-feedback", async () => {
     const password = $("teacher-password").value.trim();
-    const {rooms} = await rpc("list", {p_password:password});
-    teacherPassword = password;
+    const {token} = await rpc("login", {p_password:password});
+    const {rooms} = await rpc("list", {p_token:token});
+    teacherToken = token;
     $("teacher-password").value = "";
     $("teacher-login").hidden = true;
     $("teacher-logout").hidden = false;
@@ -522,9 +534,8 @@ $("teacher-login").onsubmit = (event) => {
   });
 };
 
-$("teacher-logout").onclick = () => {
-  if (pending) return;
-  teacherPassword = "";
+function resetTeacher() {
+  teacherToken = "";
   board = null;
   selectedGroup = null;
   $("board").hidden = true;
@@ -533,13 +544,18 @@ $("teacher-logout").onclick = () => {
   $("teacher-login").hidden = false;
   message("teacher-feedback");
   $("teacher-password").focus();
-};
+}
+
+$("teacher-logout").onclick = () => task("teacher-feedback", async () => {
+  await rpc("logout", {p_token:teacherToken});
+  resetTeacher();
+});
 
 $("create-room").onsubmit = (event) => {
   event.preventDefault();
   return task("teacher-feedback", async () => {
     const label = $("room-label").value.trim();
-    const {room} = await rpc("create", {p_password:teacherPassword, p_label:label});
+    const {room} = await rpc("create", {p_token:teacherToken, p_label:label});
     $("room-label").value = "";
     await loadBoard(room.code);
     await refreshRooms(room.code);
@@ -562,7 +578,7 @@ async function loadBoard(code, action = "board") {
     selectedGroup = null;
     $("review").open = false;
   }
-  board = await rpc(action, {p_password:teacherPassword, p_room:code});
+  board = await rpc(action, {p_token:teacherToken, p_room:code});
   renderBoard();
 }
 
@@ -626,7 +642,8 @@ function renderGroupReview(focus) {
     if (given === correct) tally.hits++;
     topics.set(q.topic, tally);
     const row = make("li");
-    row.append(make("strong", q.text), make("p", "選 " + letters[given] + " · " + (given === correct ? "答對" : "正確答案 " + letters[correct])));
+    row.append(make("strong", q.text), make("p", "本組答案 " + letters[given] + " · " + q.options[given]));
+    row.append(make("p", given === correct ? "答對" : "正確答案 " + letters[correct] + " · " + q.options[correct]));
     return row;
   }));
   $("topic-scores").replaceChildren(...Array.from(topics, ([topic, tally]) => make("span", topic + " " + tally.hits + "/" + tally.total)));
