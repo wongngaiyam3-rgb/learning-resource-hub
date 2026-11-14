@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-Hant-HK">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="小四科學光線反射闖關遊戲。擺放平面鏡，讓光線點亮晶石。">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src https://nltqzuhubqhwtfxwuupr.supabase.co; object-src 'none'; base-uri 'none'; form-action 'self'">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#f6f5fc">
+  <title>反射實驗室｜小四科學</title>
+  <link rel="icon" type="image/svg+xml" href="./icon.svg">
+  <link rel="stylesheet" href="./style.css">
+  <script type="module" src="./game.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topinner">
+      <a class="brand" href="./" aria-label="反射實驗室首頁">
+        <span class="brand-mark" aria-hidden="true">✦</span>
+        <span>反射實驗室<small>ivan’s learning-explorer</small></span>
+      </a>
+      <div class="user-actions">
+        <span id="identity" class="identity" hidden></span>
+        <button id="switch" class="button subtle" type="button" hidden>切換學生</button>
+        <button id="leader" class="button top-rank" type="button"><span aria-hidden="true">♜</span> 排行榜</button>
+      </div>
+    </div>
+  </header>
+  <main class="shell">
+    <section class="heading" aria-labelledby="title">
+      <div class="heading-text">
+        <p class="eyebrow"><span></span> 小四科學 · 光的反射</p>
+        <h1 id="title">讓光線<span>轉個彎。</span></h1>
+        <p>擺放鏡子，改變光線方向，點亮晶石。用的鏡子越少，得分越高！</p>
+      </div>
+      <div class="optical-mark" aria-hidden="true">
+        <i class="ray-start"></i><i class="ray-turn"></i><i class="ray-end"></i>
+        <i class="hero-mirror"></i><i class="hero-mirror second"></i><i class="hero-crystal">✦</i>
+      </div>
+    </section>
+
+    <div class="workspace">
+      <section class="game-card" aria-labelledby="level-title">
+        <div class="game-head">
+          <div><p class="level-label" id="level-label">第 1 關 / 共 6 關</p><h2 id="level-title">第一次反射</h2></div>
+          <div class="meter"><span>已用鏡子</span><strong id="mirror-count">0<span> / 5</span></strong></div>
+        </div>
+        <p id="task" class="task">用鏡子把光線轉向，點亮紫色晶石。</p>
+        <div class="playfield">
+          <div class="board" id="board" aria-label="光線棋盤">
+            <div class="grid" id="grid"></div>
+            <canvas id="beam" aria-hidden="true"></canvas>
+          </div>
+        </div>
+        <div class="legend" aria-label="棋盤圖例">
+          <span><i class="icon-light">➜</i>光源</span>
+          <span><i class="icon-target">◆</i>目標晶石</span>
+          <span><i class="icon-wall"></i>擋板</span>
+          <span><i class="icon-mirror">╱</i>鏡子</span>
+        </div>
+        <div id="game-tools" class="game-tools" hidden>
+          <div class="actions">
+            <button class="button secondary" id="undo" type="button" disabled>↶ 復原</button>
+            <button class="button secondary" id="reset" type="button" disabled>↻ 清空鏡子</button>
+            <button class="button secondary hint-button" id="hint" type="button" aria-expanded="false" aria-controls="hint-text">提示</button>
+          </div>
+          <p id="hint-text" class="hint" hidden></p>
+          <p id="feedback" class="feedback" role="status"></p>
+          <div id="sync-alert" class="sync-alert" hidden>
+            <p id="sync-message" role="status"></p>
+            <button id="reconnect" class="button secondary" type="button">恢復成績同步</button>
+          </div>
+          <div class="win" id="win" hidden>
+            <div><strong id="win-title"></strong><p id="win-detail"></p></div>
+            <button class="button primary" id="next" type="button"></button>
+          </div>
+        </div>
+      </section>
+
+      <aside class="sidebar" aria-label="學生入口和玩法">
+        <section class="side-card student-card" id="entry">
+          <p class="card-label"><span class="mini-icon" aria-hidden="true">↗</span> 學生入口</p>
+          <h2>準備闖關</h2>
+          <p class="muted">選擇你的班別和學號，繼續你的闖關進度。</p>
+          <form id="entrance">
+            <div class="fields">
+              <label>班別<select id="group" required><option value="">請選擇</option><option>4A</option><option>4B</option><option>4C</option></select></label>
+              <label>學號<select id="number" required><option value="">請選擇</option></select></label>
+            </div>
+            <button class="button primary start" type="submit" id="start" disabled>開始闖關 <span aria-hidden="true">→</span></button>
+            <p id="entry-status" class="form-status" role="status"></p>
+          </form>
+        </section>
+
+        <section class="side-card progress-card" id="progress" hidden>
+          <p class="card-label"><span class="mini-icon" aria-hidden="true">✦</span> 闖關進度</p>
+          <div class="progress-summary"><h2 id="total-score">0 <span>分</span></h2><span id="completion">0 / 6 關</span></div>
+          <nav id="level-list" class="level-list" aria-label="選擇關卡"></nav>
+        </section>
+
+        <section class="side-card how-card">
+          <p class="card-label"><span class="mini-icon" aria-hidden="true">?</span> 操作方法</p>
+          <div class="steps">
+            <div><span>1</span><p><strong>點一下空格</strong><small>放上一塊鏡子。</small></p><i class="tile" aria-hidden="true">╱</i></div>
+            <div><span>2</span><p><strong>再點同一格</strong><small>轉動鏡子，再點一次可拿走。</small></p><i class="tile" aria-hidden="true">╲</i></div>
+            <div><span>3</span><p><strong>讓光線照到晶石</strong><small>點亮後就可得分和過關。</small></p><i class="tile crystal-tile" aria-hidden="true">◆</i></div>
+          </div>
+          <p class="science">光線遇到鏡面會反射。在這個遊戲中，斜放的鏡子讓橫向或直向的光線轉彎 90°。</p>
+        </section>
+      </aside>
+    </div>
+    <footer><span>反射實驗室 · 小四科學</span><a href="./teacher/">教師入口</a></footer>
+  </main>
+
+  <dialog id="ranking" aria-labelledby="rank-title">
+    <div class="dialog-heading">
+      <div><p class="card-label"><span class="mini-icon" aria-hidden="true">♜</span> 闖關成績</p><h2 id="rank-title">排行榜</h2></div>
+      <button class="button secondary" id="close" type="button" autofocus>關閉</button>
+    </div>
+    <p class="muted">每關最高 100 分。每多用一塊鏡子扣 10 分，只計每關最佳成績。</p>
+    <div id="rank-filters" class="filters" role="group" aria-label="篩選班別"></div>
+    <p id="rank-status" role="status"></p>
+    <div class="table-wrap" id="table-wrap" hidden><table><thead><tr><th>名次</th><th>學生</th><th>過關</th><th>鏡子</th><th>總分</th></tr></thead><tbody id="rank-rows"></tbody></table></div>
+    <p class="muted rank-note">按總分、過關數及鏡子用量排位。可辨認自己的成績，其他名次只顯示班別。</p>
+  </dialog>
+</body>
+</html>
