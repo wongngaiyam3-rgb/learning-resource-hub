@@ -10,8 +10,12 @@ const time=s=>Math.floor(s/60)+' 分 '+String(Math.floor(s%60)).padStart(2,'0')+
 function opts(list,selected){return list.map(v=>'<option '+(v==selected?'selected':'')+'>'+v+'</option>').join('')}
 function home(){screen();app.innerHTML='<div class="intro"><section class="hero"><small>小三數學　／　除法</small><h1>除法直式<br>實驗室</h1><p>由最高位開始，逐步寫商、乘、減。</p><div class="art" aria-hidden="true"><div class="robot"><div class="face">•ᴗ•</div><div class="switch">● ▬</div></div><div class="flask">÷</div><div class="bubble">○ °</div></div></section><form class="card" id="login"><h2>學生登入</h2><div class="pair"><label>班別<select required id="cls"><option value="">選擇班別</option>'+opts(['3A','3B','3C'],profile.c)+'</select></label><label>學號<select required id="num"><option value="">選擇學號</option>'+opts(Array.from({length:25},(_,i)=>i+1),profile.s)+'</select></label></div><label>姓名<input id="name" required maxlength="30" autocomplete="off" placeholder="輸入中文或英文姓名" value="'+esc(profile.n)+'"></label><b>選擇闖關模式</b><div class="modes" style="margin-top:8px">'+[2,3].map(m=>'<button type="button" data-mode="'+m+'">'+(m===2?'兩':'三')+'位數 ÷ 一位數<small>20 個關卡</small></button>').join('')+'</div><button class="go">開始或繼續闖關</button><p class="note">由首次開始計至完成第 20 關，中途離開亦會計時。</p><div class="msg" role="status" id="msg"></div></form></div>';function pick(){document.querySelectorAll('[data-mode]').forEach(b=>{b.classList.toggle('selected',+b.dataset.mode===mode);b.setAttribute('aria-pressed',+b.dataset.mode===mode);b.onclick=()=>{mode=+b.dataset.mode;pick()}})}pick();$('login').onsubmit=async e=>{e.preventDefault();if(busy)return;let p=page;busy=true;profile={c:$('cls').value,s:+$('num').value,n:$('name').value.trim()};try{let run=await rpc('start',{c1:profile.c,s1:profile.s,n1:profile.n,m1:mode});if(page===p){r=run;mode=r.m;entry='';request=null;game()}}catch(e){if(page===p)$('msg').textContent=e.message}finally{if(page===p)busy=false}}}
 function layout(n,d){let steps=[],rem=0;[...String(n)].forEach((dig,i)=>{let x=rem*10+Number(dig),q=Math.floor(x/d);rem=x%d;if(!steps.length&&x<d)return;steps.push({i,x,q,prod:q*d,rem})});return steps}
-function game(message=''){screen();if(r.done===20){app.innerHTML='<section class="card"><span class="cap">20 / 20</span><h1>闖關成功！</h1><p>你已完成這個模式的所有關卡。</p><button id="see">查看闖關時間排行榜</button></section>';$('see').onclick=()=>ranking(mode);return}
-let [n,d]=bank[mode-2][r.done],digits=String(n),steps=layout(n,d),idx=r.step-1,current=steps[Math.floor(idx/3)],kind=idx%3,html='';
+function game(message='',solvedLevel=null){screen();if(r.done===20 && solvedLevel===null){app.innerHTML='<section class="card"><span class="cap">20 / 20</span><h1>闖關成功！</h1><p>你已完成這個模式的所有關卡。</p><button id="see">查看闖關時間排行榜</button></section>';$('see').onclick=()=>ranking(mode);return}
+const level=solvedLevel??r.done;
+const [n,d]=bank[mode-2][level],digits=String(n),steps=layout(n,d);
+const idx=solvedLevel===null ? r.step-1 : steps.length*3;
+const current=steps[Math.min(Math.floor(idx/3),steps.length-1)],kind=idx%3;
+let html='';
 function cell(col,row,txt,cls='',span=1){html+='<span class="cell '+cls+'" style="grid-column:'+col+' / span '+span+';grid-row:'+row+'">'+txt+'</span>'}
 cell(1,2,d);[...digits].forEach((v,i)=>cell(i+2,2,v,'top '+(i===0?'left':'')));
 function numberCells(value,end,row){
@@ -31,18 +35,34 @@ steps.forEach((step,j)=>{
   write(step.q,col,1,k);
   if(idx<k)return;
   const broughtDown=next && idx>=k+3;
-  // A completed zero quotient digit needs no extra subtraction row.
+  // After a zero quotient digit, carry the whole partial dividend down.
   if(step.q===0 && broughtDown)return;
   if(j>0)numberCells(step.x,col,productRow-1);
+  if(step.q===0 && idx>k)return;
   write(step.prod,col,productRow,k+1);
   if(idx>=k+1)cell(2,productRow,'','rule',digits.length);
   if(!broughtDown)write(step.rem,col,productRow+1,k+2);
   productRow+=2;
 });
 let place=['個','十','百'][digits.length-current.i-1],prompt=[place+'位的商是多少？','把剛寫的商乘以 '+d+'，積是多少？',current.x+' 減 '+current.prod+'，餘下多少？'][kind];
-app.innerHTML='<div class="meta"><b>'+esc(r.c)+' 班 '+r.s+' 號　'+esc(r.n)+'</b><span>'+mode+' 位數 ÷ 一位數</span></div><div class="bar"><i style="width:'+r.done*5+'%"></i></div><div class="lab"><section class="card"><span class="cap">第 '+(r.done+1)+' / 20 關</span><h1>'+n+' ÷ '+d+'</h1><div class="board"><div class="sheet" style="grid-template-columns:repeat('+(digits.length+1)+',44px)">'+html+'</div></div></section><section class="card"><span class="cap">'+['寫商','做乘法','做減法'][kind]+'</span><h2>'+prompt+'</h2><div class="readout" id="out">'+(entry||'＿')+'</div><div class="keys">'+[1,2,3,4,5,6,7,8,9,'清除',0,'退格'].map(v=>'<button data-key="'+v+'">'+v+'</button>').join('')+'</div><button class="go" id="submit">核對答案</button><div role="status" class="msg" id="msg">'+esc(message)+'</div></section></div>';
+const divisionScreen='<div class="meta"><b>'+esc(r.c)+' 班 '+r.s+' 號　'+esc(r.n)+'</b><span>'+mode+' 位數 ÷ 一位數</span></div><div class="bar"><i style="width:'+r.done*5+'%"></i></div><div class="lab"><section class="card"><span class="cap">第 '+(level+1)+' / 20 關</span><h1>'+n+' ÷ '+d+'</h1><div class="board"><div class="sheet" style="grid-template-columns:repeat('+(digits.length+1)+',44px)">'+html+'</div></div></section>';
+if(solvedLevel!==null){
+  const remainder=n%d;
+  const answer=n+' ÷ '+d+' ＝ '+Math.floor(n/d)+(remainder ? ' 餘 '+remainder : '');
+  app.innerHTML=divisionScreen+'<section class="card"><span class="cap">本關完成</span><h2>'+answer+'</h2><p>個位的商寫 0，最後剩下 '+remainder+'。</p><button class="go" id="continue">'+(r.done===20?'查看完成結果':'下一關')+'</button></section></div>';
+  $('continue').onclick=()=>game();
+  return;
+}
+app.innerHTML=divisionScreen+'<section class="card"><span class="cap">'+['寫商','做乘法','做減法'][kind]+'</span><h2>'+prompt+'</h2><div class="readout" id="out">'+(entry||'＿')+'</div><div class="keys">'+[1,2,3,4,5,6,7,8,9,'清除',0,'退格'].map(v=>'<button data-key="'+v+'">'+v+'</button>').join('')+'</div><button class="go" id="submit">核對答案</button><div role="status" class="msg" id="msg">'+esc(message)+'</div></section></div>';
 function digit(k){if(busy)return;entry=k==='清除'?'':k==='退格'?entry.slice(0,-1):(entry+k).slice(0,2);request=null;$('out').textContent=entry||'＿';document.querySelector('.active').textContent=entry||'□'}
-document.querySelectorAll('[data-key]').forEach(b=>b.onclick=()=>digit(b.dataset.key));$('submit').onclick=async()=>{if(busy||!entry)return;busy=true;let p=page;request??=crypto.randomUUID();try{let a=await rpc('answer',{t:r.token,l:r.done+1,k:r.step,v:+entry,req:request});if(p!==page)return;let previous=r.done;r.done=a.done;r.step=a.step;entry='';request=null;game(a.ok?(previous!==r.done?'上一關完成！':'答對了！'):(kind===0?'再試一次。這一位不夠除時，記得寫 0。':kind===1?'再試一次，核對乘法口訣。':'再試一次，餘數要比除數小。'))}catch(e){if(page===p){busy=false;$('msg').textContent='未能確認儲存，請再按「核對答案」。'}}};app.onkeydown=e=>{if(/^\d$/.test(e.key))digit(e.key);else if(e.key==='Backspace'){e.preventDefault();digit('退格')}}}
+document.querySelectorAll('[data-key]').forEach(b=>b.onclick=()=>digit(b.dataset.key));$('submit').onclick=async()=>{if(busy||!entry)return;busy=true;let p=page;request??=crypto.randomUUID();try{let a=await rpc('answer',{t:r.token,l:r.done+1,k:r.step,v:+entry,req:request});if(p!==page)return;let previous=r.done;
+const zeroQuotient=a.ok && kind===0 && current.q===0 && Number(entry)===0;
+r.done=a.done;r.step=a.step;entry='';request=null;
+if(zeroQuotient && r.done===previous+1){
+  game('',previous);
+  return;
+}
+game(a.ok?(previous!==r.done?'上一關完成！':zeroQuotient && r.step===idx+4?'答對了！商寫 0，移下下一個數字。':'答對了！'):(kind===0?'再試一次。這一位不夠除時，記得寫 0。':kind===1?'再試一次，核對乘法口訣。':'再試一次，餘數要比除數小。'))}catch(e){if(page===p){busy=false;$('msg').textContent='未能確認儲存，請再按「核對答案」。'}}};app.onkeydown=e=>{if(/^\d$/.test(e.key))digit(e.key);else if(e.key==='Backspace'){e.preventDefault();digit('退格')}}}
 const table=(heads,rows)=>'<div class="wrap"><table><thead><tr>'+heads.map(s=>'<th>'+s+'</th>').join('')+'</tr></thead><tbody>'+rows.map(row=>'<tr>'+row.map(s=>'<td>'+esc(s)+'</td>').join('')+'</tr>').join('')+'</tbody></table></div>';
 async function ranking(m){let p=screen();app.innerHTML='<section class="card"><span class="cap">完成全部 20 關</span><h1>闖關時間排行榜</h1><div class="modes">'+[2,3].map(i=>'<button id="r'+i+'" class="'+(i===m?'selected':'')+'">'+(i===2?'兩':'三')+'位數 ÷ 一位數</button>').join('')+'</div><p class="note">按完成時間排列，顯示最快的 10 名學生。</p><div id="results">讀取中…</div></section>';[2,3].forEach(i=>$('r'+i).onclick=()=>ranking(i));try{let rows=await rpc('rank',{m1:m});if(page===p)$('results').innerHTML=table(['名次','班別','學號','姓名','闖關時間'],rows.map((v,i)=>[i+1,v.c,v.s,v.n,time(v.sec)]))+(rows.length?'':'<p class="empty">暫時未有學生完成這個模式的全部關卡。</p>')}catch(e){if(page===p)$('results').textContent='未能讀取，請再選一次模式。'}}
 function teacher(){let p=screen();app.innerHTML='<form id="auth" class="card" style="max-width:480px;margin:auto"><h2>教師管理</h2><label>教師密碼<input required type="password" id="pw" autocomplete="current-password"></label><button class="go">登入</button><div class="msg" id="msg"></div></form>';$('auth').onsubmit=async e=>{e.preventDefault();let pw=$('pw').value;try{let rows=await rpc('teacher',{p:pw});if(page===p){pass=pw;records=rows;dashboard()}}catch(e){if(page===p)$('msg').textContent=e.message}}}
