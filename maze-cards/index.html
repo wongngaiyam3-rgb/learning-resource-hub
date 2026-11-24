@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="zh-Hant-HK">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#10291f">
+<meta name="description" content="用四張指令卡操控小車，挑戰十個由淺入深的編程迷宮。">
+<title>四張指令卡｜逃出迷宮</title>
+<link rel="stylesheet" href="./style.css">
+<script type="module" src="./app.js"></script>
+</head>
+<body>
+<header class="top"><div class="top-inner">
+  <div class="brand"><span class="brand-icon" aria-hidden="true">▦</span><span>逃出迷宮</span></div>
+  <div class="top-actions"><span id="identity"></span><button id="home" class="top-button" hidden>返回首頁</button><button id="teacher-button" class="top-button">教師平台</button></div>
+</div></header>
+
+<main>
+  <section id="welcome" class="welcome">
+    <div class="intro">
+      <p class="tag">四張指令卡</p>
+      <h1>逃出迷宮</h1>
+      <p class="intro-copy">先排好指令，再按執行。<br>帶小車走到出口，挑戰 10 個迷宮！</p>
+      <form id="student-form">
+        <div class="fields">
+          <label>班別<select id="student-class" required><option value="">選擇班別</option><option>2A</option><option>2B</option></select></label>
+          <label>學號<select id="student-number" required><option value="">選擇學號</option></select></label>
+        </div>
+        <button class="primary" type="submit">開始挑戰</button>
+        <p id="login-status" class="message" role="status"></p>
+      </form>
+    </div>
+    <div class="illustration" aria-hidden="true">
+      <div class="sample-grid" id="sample-grid"></div>
+      <div class="sample-cards"><span class="card-F">↑</span><span class="card-B">↓</span><span class="card-L">↶</span><span class="card-R">↷</span></div>
+    </div>
+  </section>
+
+  <section id="game" hidden>
+    <div class="level-header">
+      <div><p class="tag" id="level-number"></p><h1 id="level-title"></h1></div>
+      <div class="total" id="completed-total"></div>
+    </div>
+    <nav id="levels" aria-label="選擇關卡"></nav>
+    <div class="game-layout">
+      <section class="board-panel" aria-label="迷宮">
+        <div class="board-meta"><span><i class="legend-car"></i> 小車</span><span><i class="legend-exit"></i> 出口</span><span><i class="legend-wall"></i> 牆壁</span></div>
+        <div class="board-wrap"><div class="board" id="board" role="img"></div></div>
+        <p class="hint" id="hint"></p>
+      </section>
+
+      <section class="controls">
+        <h2>指令卡</h2>
+        <p class="hint">看看車頭朝向，再點選卡牌。</p>
+        <div id="palette" class="palette"></div>
+        <div class="sequence-head"><h2>我的指令</h2><span id="card-count">0 張卡</span></div>
+        <div class="sequence" id="sequence" role="group" aria-label="已排列的指令"></div>
+        <div class="edits" id="edits" hidden>
+          <button id="insert-card">在此之前插入</button><button id="delete-card">刪除這張卡</button><button id="cancel-edit">取消</button>
+        </div>
+        <p id="edit-hint" class="hint" hidden>點一張指令卡，插入所選位置。</p>
+        <div class="run-controls"><button class="primary" id="run">執行全部</button><button id="step">逐步執行</button></div>
+        <div class="reset-controls"><button id="reset">小車回起點</button><button id="clear">清空指令</button></div>
+        <div id="feedback" class="feedback" role="status"></div>
+        <div id="success-controls" hidden><button id="next" class="primary">下一關</button></div>
+        <div class="sync-line"><span id="sync-status" role="status"></span><button id="retry-save" hidden>重試儲存</button></div>
+      </section>
+    </div>
+  </section>
+
+  <section id="teacher" class="teacher" hidden>
+    <p class="tag">學習進度</p><h1>教師平台</h1>
+    <form id="teacher-form">
+      <label>教師密碼<input type="password" id="teacher-password" required maxlength="64" autocomplete="current-password"></label>
+      <button class="primary" type="submit">登入</button>
+    </form>
+    <p id="teacher-status" class="message" role="status"></p>
+    <section id="roster" hidden>
+      <div class="roster-controls"><label>班別<select id="teacher-class"><option>2A</option><option>2B</option></select></label><button id="refresh">更新紀錄</button><button id="download" class="primary">匯出 CSV</button><button id="teacher-logout">登出</button></div>
+      <p class="hint">每關顯示過關用卡最少張數及嘗試次數。</p>
+      <div class="table-wrap"><table id="results"></table></div>
+    </section>
+  </section>
+</main>
+<template id="car-template"><div class="car" aria-hidden="true"><div class="car-body"><i></i><b></b><em></em></div></div></template>
+<template id="exit-template"><div class="flag" aria-hidden="true">⚑</div></template>
+</body>
+</html>

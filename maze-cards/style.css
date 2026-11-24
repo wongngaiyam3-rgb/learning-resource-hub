@@ -1,0 +1,106 @@
+:root{color-scheme:light;--ink:#172d25;--muted:#52685e;--deep:#10291f;--mint:#caefb9;--paper:#f4f7ee;--line:#d9e2d2;--white:#fff;--gold:#f6ca65;--blue:#bfe2fa;--lilac:#e6d6fc;--rose:#ffd5cb;font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;color:var(--ink);background:var(--paper)}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh}
+[hidden]{display:none!important}
+h1,h2,p{margin:0}
+button,select,input{font:inherit}
+button,select,input{min-height:44px;border:1px solid #c6d3c4;border-radius:12px;background:#fff;color:var(--ink)}
+button{padding:8px 14px;cursor:pointer;font-weight:700;touch-action:manipulation}
+button:disabled{opacity:.48;cursor:default}
+button:hover:not(:disabled){filter:brightness(.96)}
+:focus-visible{outline:3px solid #a95d00;outline-offset:3px}
+.top{background:var(--deep);color:#fff}
+.top-inner{max-width:1260px;margin:auto;display:flex;align-items:center;justify-content:space-between;min-height:72px;padding:8px clamp(14px,3vw,36px);gap:10px}
+.brand,.top-actions{display:flex;align-items:center;gap:12px}
+.brand{font-weight:900;font-size:1.15rem;white-space:nowrap}
+.brand-icon{display:grid;place-items:center;background:var(--mint);color:var(--deep);width:37px;aspect-ratio:1;border-radius:9px;font-size:1.55rem}
+.top-button{background:transparent;color:#fff;border-color:#557262}
+#identity{color:#d4e7d8;font-weight:700}
+main{max-width:1260px;margin:auto;padding:clamp(20px,4vw,56px) clamp(14px,3vw,36px)}
+.welcome{display:grid;grid-template-columns:1fr 1.09fr;min-height:540px;border-radius:28px;overflow:hidden;background:#fff;border:1px solid var(--line);box-shadow:0 16px 52px #1b402015}
+.intro{padding:clamp(28px,5vw,66px);display:flex;flex-direction:column;justify-content:center}
+.tag{color:#36714f;font-weight:850;letter-spacing:.11em}
+h1{font-size:clamp(1.8rem,4vw,3.2rem);font-weight:950;line-height:1.16}
+.intro h1{margin:12px 0 18px;font-size:clamp(2.7rem,6.0vw,5.2rem);letter-spacing:-.045em}
+.intro-copy{font-size:clamp(1.05rem,2.2vw,1.32rem);line-height:1.7;color:var(--muted)}
+#student-form{margin-top:30px}
+.fields{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+label{display:grid;gap:6px;font-weight:750}
+select,input{padding:8px 12px;width:100%;font-weight:500}
+.primary{background:#21543b;color:white;border-color:#21543b;box-shadow:0 3px 0 #0f3525}
+#student-form .primary{width:100%;min-height:50px}
+.message{margin-top:12px;color:#83402d}
+.message:empty{display:none}
+.illustration{min-height:410px;background:#193b2d;background-image:radial-gradient(#457158 1px,transparent 1px);background-size:21px 21px;display:grid;place-content:center;justify-items:center;gap:20px;padding:28px}
+.sample-grid{width:min(365px,35vw);display:grid;grid-template-columns:repeat(5,1fr);gap:3px;background:#0b271b;padding:9px;border-radius:17px;box-shadow:0 12px 0 #0e261b,0 22px 32px #0005}
+.sample-cards{display:flex;gap:10px}
+.sample-cards span{display:grid;place-items:center;width:50px;height:46px;border-radius:10px;font-weight:900;font-size:1.55rem;box-shadow:0 4px 0 #071b11}
+.level-header{display:flex;align-items:end;justify-content:space-between;gap:12px;margin-bottom:16px}
+.level-header .tag{margin-bottom:7px}
+.total{font-weight:800;color:#296140;white-space:nowrap}
+#levels{display:grid;grid-template-columns:repeat(10,1fr);gap:8px;margin-bottom:22px}
+#levels button{min-width:0;padding:6px 2px;font-size:1rem}
+#levels button[aria-current=true]{background:var(--deep);color:white;border-color:var(--deep)}
+#levels button.done:not([aria-current=true]){background:var(--mint)}
+.game-layout{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:16px;align-items:start}
+.board-panel,.controls,.teacher{background:#fff;border:1px solid var(--line);border-radius:20px;padding:clamp(13px,2.5vw,24px);box-shadow:0 7px 28px #2042220b}
+.board-meta{display:flex;flex-wrap:wrap;gap:12px 18px;padding-bottom:14px;font-weight:750}
+.board-meta span{display:flex;align-items:center;gap:6px;font-size:.92rem}
+.board-meta i{display:block;width:14px;height:14px;border-radius:4px}
+.legend-car{background:#f2ae38}.legend-exit{background:#63b86d}.legend-wall{background:#295640}
+.board-wrap{display:grid;place-items:center;border-radius:15px;background:#17382a;padding:clamp(8px,2vw,18px)}
+.board{display:grid;position:relative;width:min(100%,448px);grid-template-columns:repeat(var(--cols),1fr);gap:3px;isolation:isolate}
+.cell{position:relative;display:grid;place-items:center;aspect-ratio:1;border-radius:clamp(3px,.7vw,8px);background:#e8f0dc;box-shadow:inset 0 -3px #cbdcc4;min-width:0}
+.cell.wall{background:#2c6046;background-image:radial-gradient(ellipse at 31% 26%,#4e8059 0 10%,transparent 13%),radial-gradient(ellipse at 72% 72%,#407452 0 8%,transparent 12%);box-shadow:inset 0 -4px #214b38}
+.cell.start{background:#d8e8c9}
+.cell.exit{background:#a7e2a0;box-shadow:inset 0 -3px #81c880}
+.cell.visited::after{content:"";width:14%;height:14%;border-radius:50%;background:#8aaa8a;position:absolute}
+.flag{font-size:clamp(1.25rem,4vw,2.4rem);color:#155937;font-weight:900;line-height:1}
+.car{position:absolute;inset:12%;z-index:2;transform:rotate(var(--rotation,90deg));pointer-events:none}
+.car-body{position:absolute;inset:6% 19%;border-radius:25% 25% 19% 19%;background:#ffa937;border:2px solid #774100;box-shadow:-4px 3px 0 -1px #253328,4px 3px 0 -1px #253328,0 2px 3px #0005}
+.car-body i{position:absolute;inset:25% 12% 43%;background:#ffe4a9;border:1px solid #9d6323;border-radius:25%}
+.car-body b,.car-body em{position:absolute;top:4%;width:24%;height:15%;background:#fff1bc;border-radius:35%}
+.car-body b{left:6%}.car-body em{right:6%}
+.cell.crash{outline:3px solid #d54331;outline-offset:-2px}
+.hint{color:var(--muted);line-height:1.55;font-size:.97rem}
+.board-panel > .hint{margin-top:14px}
+h2{font-size:1.17rem}
+.palette{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin:12px 0 20px}
+.palette button{min-height:74px;border:1px solid #20342624;padding:5px 2px;display:grid;align-content:center;justify-items:center;gap:3px;font-size:.93rem;line-height:1.2;box-shadow:0 3px 0 #253d2335}
+.symbol{font-size:1.7rem;line-height:1.04}
+.card-F{background:var(--mint)}.card-B{background:var(--blue)}.card-L{background:var(--lilac)}.card-R{background:var(--rose)}
+.sequence-head,.sync-line{display:flex;justify-content:space-between;align-items:center;gap:8px}
+#card-count,.sync-line{font-size:.9rem;color:var(--muted)}
+.sequence{border:1px dashed #afc2ad;background:#f5f8f1;border-radius:13px;padding:8px;min-height:66px;max-height:234px;overflow:auto;display:flex;gap:5px;align-content:flex-start;flex-wrap:wrap;margin-top:8px}
+.sequence p{align-self:center;margin:auto 5px;color:var(--muted)}
+.sequence button{width:45px;min-height:45px;padding:3px;display:grid;justify-items:center;line-height:1}
+.sequence button span:first-child{font-size:.72rem}
+.sequence button.active,.sequence button.selected{border:2px solid #21543b}
+.sequence button.error{border:2px solid #bd372a}
+.edits,.run-controls,.reset-controls{display:flex;gap:8px;flex-wrap:wrap;margin-top:9px}
+.run-controls button{flex:1 0 auto}
+.reset-controls button{flex:1 0 auto}
+.feedback{margin:12px 0 8px;padding:10px 12px;border-radius:10px;background:#edf3e9;line-height:1.5;min-height:44px}
+.feedback[data-kind=error]{background:#ffe5dc;color:#78271e}
+.feedback[data-kind=success]{background:#dcedcf;color:#21553a;font-weight:800}
+#next{width:100%;margin-bottom:10px}
+.sync-line{min-height:24px}
+.teacher h1{margin:8px 0 21px}
+#teacher-form,.roster-controls{display:flex;gap:10px;align-items:end;flex-wrap:wrap}
+#teacher-form label{flex:0 1 320px}
+.roster-controls{margin-bottom:12px}
+.table-wrap{margin-top:12px;overflow:auto}
+table{border-collapse:collapse;min-width:780px;width:100%;text-align:center}
+th,td{padding:8px;border-bottom:1px solid var(--line)}
+th{background:#e7f1e4;white-space:nowrap}
+td{font-size:.9rem}
+@media(max-width:760px){
+  .top-inner{min-height:61px}
+  .welcome,.game-layout{grid-template-columns:1fr}
+  .welcome{min-height:0}
+  .illustration{min-height:0;padding:25px}
+  .sample-grid{width:min(245px,65vw)}
+  #levels{grid-template-columns:repeat(5,1fr)}
+  .board{width:min(100%,356px)}
+}
+@media(max-width:400px){.brand{font-size:1rem;gap:6px}.brand-icon{width:29px}.top-actions{gap:6px}.top-button{padding:5px 7px}.palette button{font-size:.8rem}.total{font-size:.8rem}}
