@@ -1,8 +1,10 @@
-import { atExit, cards, levels, move } from './levels.js'
+import { atExit, cards, levels, move } from './levels.js?v=2'
 import { rpc } from './connection.js'
+import { characters, fallbackSprite, pokemonSprite } from './pokemon.js'
 
 const $ = id => document.getElementById(id)
 const titles = ['上方', '右方', '下方', '左方']
+const directions = ['↑', '→', '↓', '←']
 const option = (label, value = label) => new Option(label, value)
 const button = (label, action) => {
   const node = document.createElement('button')
@@ -44,6 +46,8 @@ let pending = []
 let saving = false
 let saveTimer
 let failed = false
+let character = characters[0]
+const characterSprites = new Map()
 
 function switchView(name) {
   for (const view of ['welcome', 'game', 'teacher']) $(view).hidden = view !== name
@@ -65,19 +69,87 @@ function tile(marker, marked = false) {
   return node
 }
 
-function addCar(tileNode, direction) {
-  const car = $('car-template').content.firstElementChild.cloneNode(true)
-  car.style.setProperty('--rotation', direction * 90 + 'deg')
-  tileNode.append(car)
+function spriteImage(item) {
+  const image = element('img', 'pokemon-sprite')
+  image.alt = ''
+  image.referrerPolicy = 'no-referrer'
+  const fallback = fallbackSprite(item)
+  image.addEventListener('error', () => {
+    if (image.src !== fallback) {
+      image.src = fallback
+    } else {
+      image.hidden = true
+      image.nextElementSibling.hidden = false
+    }
+  })
+  image.src = characterSprites.get(item.id) ?? fallback
+  return image
 }
 
-for (const row of ['#####', '#..E#', '#.#.#', '#S..#', '#####']) {
-  for (const marker of row) {
-    const cell = tile(marker)
-    if (marker === 'S') addCar(cell, 0)
-    $('sample-grid').append(cell)
+function tokenIcon(item) {
+  if (!item.id) {
+    return $('car-template').content.firstElementChild.cloneNode(true)
   }
+  const icon = element('div', 'pokemon-icon')
+  const initials = element('span', 'pokemon-initial', item.name[0])
+  initials.hidden = true
+  icon.append(spriteImage(item), initials)
+  return icon
 }
+
+function addPiece(tileNode, direction) {
+  const token = element('div', 'piece')
+  token.dataset.direction = direction
+  const icon = tokenIcon(character)
+  const arrow = element('span', 'facing-arrow', directions[direction])
+  token.setAttribute('aria-hidden', 'true')
+  icon.style.setProperty('--rotation', direction * 90 + 'deg')
+  token.append(icon, arrow)
+  tileNode.append(token)
+}
+
+const sample = $('sample-grid')
+for (const row of ['#####', '#..E#', '#.#.#', '#S..#', '#####']) {
+  for (const marker of row) sample.append(tile(marker))
+}
+
+function renderCharacter() {
+  sample.querySelector('.piece')?.remove()
+  addPiece(sample.querySelector('.start'), 0)
+  $('welcome-character').textContent = '選擇角色 · ' + character.name
+  if (position) board()
+}
+
+async function selectCharacter(item) {
+  character = item
+  renderCharacter()
+  if (!item.id || characterSprites.has(item.id)) return
+  const url = await pokemonSprite(item)
+  characterSprites.set(item.id, url)
+  if (character === item) renderCharacter()
+}
+
+function openCharacterPicker() {
+  const choices = characters.map(item => {
+    const control = button('', () => {
+      selectCharacter(item)
+      $('character-picker').close()
+    })
+    control.setAttribute('aria-pressed', String(character === item))
+    const icon = tokenIcon(item)
+    icon.setAttribute('aria-hidden', 'true')
+    const iconFrame = element('span', 'choice-icon')
+    iconFrame.append(icon)
+    control.append(iconFrame, element('span', '', item.name))
+    return control
+  })
+  $('character-options').replaceChildren(...choices)
+  $('character-picker').showModal()
+}
+
+$('welcome-character').addEventListener('click', openCharacterPicker)
+$('game-character').addEventListener('click', openCharacterPicker)
+selectCharacter(character)
 
 for (const [code, card] of Object.entries(cards)) {
   const control = button('', () => addCard(code))
@@ -91,13 +163,14 @@ for (const [code, card] of Object.entries(cards)) {
 function board() {
   const grid = $('board')
   grid.style.setProperty('--cols', level.map[0].length)
-  grid.setAttribute('aria-label', '小車在第 ' + (position.row + 1) + ' 行第 ' + (position.col + 1) +
-    ' 格，車頭朝' + titles[position.direction] + '。出口在第 ' + (level.exit.row + 1) +
+  $('facing').textContent = directions[position.direction] + ' ' + character.name + '朝' + titles[position.direction]
+  grid.setAttribute('aria-label', character.name + '在第 ' + (position.row + 1) + ' 行第 ' + (position.col + 1) +
+    ' 格，朝向' + titles[position.direction] + '。出口在第 ' + (level.exit.row + 1) +
     ' 行第 ' + (level.exit.col + 1) + ' 格。')
   const cells = level.map.flatMap((row, y) => Array.from(row, (marker, x) => {
     const cell = tile(marker, visited.has(sight(y, x)))
     if (y === position.row && x === position.col) {
-      addCar(cell, position.direction)
+      addPiece(cell, position.direction)
       if (hit) cell.classList.add('crash')
     }
     return cell
@@ -267,7 +340,7 @@ function advance() {
   const nextPosition = move(level, position, program[active])
   if (!nextPosition) {
     hit = true
-    finish(false, '第 ' + (active + 1) + ' 張卡令小車碰到牆壁或邊界。點這張卡來修改。')
+    finish(false, '第 ' + (active + 1) + ' 張卡令' + character.name + '碰到牆壁或邊界。點這張卡來修改。')
   } else {
     position = nextPosition
     visited.add(sight(position.row, position.col))
@@ -275,9 +348,9 @@ function advance() {
       const next = level.id === 10 ? '已到達最後一關的出口！' : '到達出口！'
       finish(true, next + ' 這次用了 ' + (active + 1) + ' 張卡。')
     } else if (active + 1 === program.length) {
-      finish(false, '小車已走完所有指令。它還未到出口，再加入或修改卡牌。')
+      finish(false, character.name + '已走完所有指令。它還未到出口，再加入或修改卡牌。')
     } else {
-      feedback('已執行第 ' + (active + 1) + ' 張卡：' + cards[program[active]].label + '。車頭朝' + titles[position.direction] + '。')
+      feedback('已執行第 ' + (active + 1) + ' 張卡：' + cards[program[active]].label + '。現在朝向' + titles[position.direction] + '。')
     }
   }
   board()
