@@ -111,6 +111,7 @@ td{font-size:.9rem}
 .board-meta #facing{color:#21543b;font-weight:850}
 .piece{position:absolute;inset:3%;z-index:2;pointer-events:none}
 .piece .car{inset:12%}
+.direction-sprite{position:absolute;inset:7%;background-repeat:no-repeat;image-rendering:pixelated;filter:drop-shadow(0 1px 1px #152d2550)}
 .pokemon-icon{position:absolute;inset:0;display:grid;place-items:center}
 .pokemon-sprite{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 1px 1px #152d2570)}
 .pokemon-initial{display:grid;place-items:center;width:73%;aspect-ratio:1;border-radius:50%;background:var(--gold);color:var(--deep);font-weight:900}
@@ -119,6 +120,11 @@ td{font-size:.9rem}
 .piece[data-direction="1"] .facing-arrow{right:0;top:50%;transform:translateY(-50%)}
 .piece[data-direction="2"] .facing-arrow{bottom:0;left:50%;transform:translateX(-50%)}
 .piece[data-direction="3"] .facing-arrow{left:0;top:50%;transform:translateY(-50%)}
+.direction-sprite + .facing-arrow{width:clamp(13px,2.5vw,19px);font-size:clamp(10px,1.7vw,14px)}
+.piece[data-direction="0"] .direction-sprite + .facing-arrow{top:-4px}
+.piece[data-direction="1"] .direction-sprite + .facing-arrow{right:-4px}
+.piece[data-direction="2"] .direction-sprite + .facing-arrow{bottom:-4px}
+.piece[data-direction="3"] .direction-sprite + .facing-arrow{left:-4px}
 #character-picker{width:min(520px,calc(100% - 26px));max-height:calc(100% - 26px);padding:17px;border:1px solid var(--line);border-radius:20px;color:var(--ink);box-shadow:0 20px 65px #0f35254f}
 #character-picker::backdrop{background:#10291fa3}
 .picker-heading{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}

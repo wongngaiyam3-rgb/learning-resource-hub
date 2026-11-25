@@ -1,6 +1,6 @@
 import { atExit, cards, levels, move } from './levels.js?v=2'
 import { rpc } from './connection.js'
-import { characters, fallbackSprite, pokemonSprite } from './pokemon.js'
+import { characters, directionSprite, fallbackSprite, pokemonSprite } from './pokemon.js?v=3'
 
 const $ = id => document.getElementById(id)
 const titles = ['上方', '右方', '下方', '左方']
@@ -100,10 +100,19 @@ function tokenIcon(item) {
 function addPiece(tileNode, direction) {
   const token = element('div', 'piece')
   token.dataset.direction = direction
-  const icon = tokenIcon(character)
+  let icon
+  if (character.id) {
+    const sprite = directionSprite(character.id, direction)
+    icon = element('div', 'direction-sprite')
+    icon.style.backgroundImage = 'url(' + sprite.url + ')'
+    icon.style.backgroundSize = sprite.size
+    icon.style.backgroundPosition = sprite.position
+  } else {
+    icon = tokenIcon(character)
+    icon.style.setProperty('--rotation', direction * 90 + 'deg')
+  }
   const arrow = element('span', 'facing-arrow', directions[direction])
   token.setAttribute('aria-hidden', 'true')
-  icon.style.setProperty('--rotation', direction * 90 + 'deg')
   token.append(icon, arrow)
   tileNode.append(token)
 }
@@ -115,7 +124,7 @@ for (const row of ['#####', '#..E#', '#.#.#', '#S..#', '#####']) {
 
 function renderCharacter() {
   sample.querySelector('.piece')?.remove()
-  addPiece(sample.querySelector('.start'), 0)
+  addPiece(sample.querySelector('.start'), 1)
   $('welcome-character').textContent = '選擇角色 · ' + character.name
   if (position) board()
 }
@@ -126,7 +135,6 @@ async function selectCharacter(item) {
   if (!item.id || characterSprites.has(item.id)) return
   const url = await pokemonSprite(item)
   characterSprites.set(item.id, url)
-  if (character === item) renderCharacter()
 }
 
 function openCharacterPicker() {

@@ -11,6 +11,28 @@ export const characters = [
   { id: 0, name: '小車' },
 ]
 
+// Each sheet uses eight compass rows. The maze uses north, east, south and west.
+const directionRows = [4, 2, 0, 6]
+const walkSheets = {
+  // Image width and height, row height, and square crop (left, top, size).
+  1: [240, 320, 40, 7, 4, 25],
+  4: [128, 256, 32, 2, 0, 26],
+  7: [128, 256, 32, 1, 0, 29],
+  25: [128, 320, 40, 1, 0, 30],
+  133: [280, 384, 48, 7, 6, 26],
+  143: [128, 384, 48, 0, 0, 32],
+}
+
+export function directionSprite(id, direction) {
+  const [width, height, rowHeight, left, top, size] = walkSheets[id]
+  const y = directionRows[direction] * rowHeight + top
+  return {
+    url: './sprites/' + String(id).padStart(4, '0') + '.png',
+    size: (100 * width / size) + '% ' + (100 * height / size) + '%',
+    position: (100 * left / (width - size)) + '% ' + (100 * y / (height - size)) + '%',
+  }
+}
+
 export function fallbackSprite(character) {
   return spriteRoot + character.id + '.png'
 }
