@@ -6,8 +6,8 @@
 <meta name="theme-color" content="#10291f">
 <meta name="description" content="選擇 Pokémon 棋子，用四張指令卡挑戰十個編程迷宮。">
 <title>四張指令卡｜逃出迷宮</title>
-<link rel="stylesheet" href="./style.css?v=3">
-<script type="module" src="./app.js?v=3"></script>
+<link rel="stylesheet" href="./style.css?v=4">
+<script type="module" src="./app.js?v=4"></script>
 </head>
 <body>
 <header class="top"><div class="top-inner">
@@ -52,10 +52,14 @@
 
       <section class="controls">
         <h2>指令卡</h2>
-        <p class="hint">看看棋子旁的方向箭嘴，再點選卡牌。</p>
+        <p class="hint">點選卡牌來排指令，再按「執行全部」或「逐步執行」。</p>
         <div id="palette" class="palette"></div>
         <div class="sequence-head"><h2>我的指令</h2><span id="card-count">0 張卡</span></div>
         <div class="sequence" id="sequence" role="group" aria-label="已排列的指令"></div>
+        <div id="turn-preview" class="turn-preview" hidden>
+          <div id="turn-preview-piece" class="turn-preview-piece" aria-hidden="true"></div>
+          <div role="status"><div id="turn-preview-label"></div><strong id="turn-preview-facing"></strong></div>
+        </div>
         <div class="edits" id="edits" hidden>
           <button id="insert-card">在此之前插入</button><button id="delete-card">刪除這張卡</button><button id="cancel-edit">取消</button>
         </div>

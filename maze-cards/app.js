@@ -126,7 +126,10 @@ function renderCharacter() {
   sample.querySelector('.piece')?.remove()
   addPiece(sample.querySelector('.start'), 1)
   $('welcome-character').textContent = '選擇角色 · ' + character.name
-  if (position) board()
+  if (position) {
+    board()
+    renderTurnPreview()
+  }
 }
 
 async function selectCharacter(item) {
@@ -204,6 +207,28 @@ function renderLevels() {
   $('completed-total').textContent = '已完成 ' + total + ' / 10'
 }
 
+function renderTurnPreview() {
+  const preview = $('turn-preview')
+  let planned = level.start
+  let lastTurn = -1
+  for (const [index, code] of program.entries()) {
+    if (code === 'L' || code === 'R') {
+      planned = move(level, planned, code)
+      lastTurn = index
+    }
+  }
+  preview.hidden = lastTurn === -1
+  if (preview.hidden) return
+  const label = '轉向預覽 · 第 ' + (lastTurn + 1) + ' 張「' + cards[program[lastTurn]].label + '」後'
+  const facing = character.name + '朝' + titles[planned.direction]
+  if ($('turn-preview-label').textContent === label && $('turn-preview-facing').textContent === facing) return
+  const token = $('turn-preview-piece')
+  token.replaceChildren()
+  addPiece(token, planned.direction)
+  $('turn-preview-label').textContent = label
+  $('turn-preview-facing').textContent = facing
+}
+
 function renderSequence() {
   const sequence = $('sequence')
   const controls = program.map((code, index) => {
@@ -236,6 +261,7 @@ function renderSequence() {
   $('edits').hidden = selected < 0 || playing
   $('edit-hint').hidden = !inserting
   $('card-count').textContent = program.length + ' 張卡'
+  renderTurnPreview()
   for (const control of $('palette').children) control.disabled = playing
   $('run').disabled = playing || !program.length
   $('step').disabled = playing || !program.length
@@ -345,7 +371,8 @@ function finish(success, text) {
 
 function advance() {
   active++
-  const nextPosition = move(level, position, program[active])
+  const code = program[active]
+  const nextPosition = move(level, position, code)
   if (!nextPosition) {
     hit = true
     finish(false, '第 ' + (active + 1) + ' 張卡令' + character.name + '碰到牆壁或邊界。點這張卡來修改。')
@@ -356,9 +383,12 @@ function advance() {
       const next = level.id === 10 ? '已到達最後一關的出口！' : '到達出口！'
       finish(true, next + ' 這次用了 ' + (active + 1) + ' 張卡。')
     } else if (active + 1 === program.length) {
-      finish(false, character.name + '已走完所有指令。它還未到出口，再加入或修改卡牌。')
+      const message = code === 'L' || code === 'R'
+        ? '已執行「' + cards[code].label + '」，' + character.name + '現在朝' + titles[position.direction] + '。'
+        : character.name + '已走完所有指令。'
+      finish(false, message + '還未到出口，再加入或修改卡牌。')
     } else {
-      feedback('已執行第 ' + (active + 1) + ' 張卡：' + cards[program[active]].label + '。現在朝向' + titles[position.direction] + '。')
+      feedback('已執行第 ' + (active + 1) + ' 張卡：' + cards[code].label + '。現在朝向' + titles[position.direction] + '。')
     }
   }
   board()

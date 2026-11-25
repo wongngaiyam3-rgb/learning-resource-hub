@@ -77,6 +77,9 @@ h2{font-size:1.17rem}
 .sequence button span:first-child{font-size:.72rem}
 .sequence button.active,.sequence button.selected{border:2px solid #21543b}
 .sequence button.error{border:2px solid #bd372a}
+.turn-preview{display:flex;align-items:center;gap:10px;margin-top:8px;padding:6px 10px;border:1px solid var(--line);border-radius:12px;background:#f5f8f1}
+.turn-preview-piece{position:relative;width:49px;aspect-ratio:1;flex:none;border-radius:8px;background:#e4edda}
+#turn-preview-label{font-size:.88rem;color:var(--muted)}
 .edits,.run-controls,.reset-controls{display:flex;gap:8px;flex-wrap:wrap;margin-top:9px}
 .run-controls button{flex:1 0 auto}
 .reset-controls button{flex:1 0 auto}
