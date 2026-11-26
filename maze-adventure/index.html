@@ -31,6 +31,30 @@ button,select{font:inherit;min-height:44px;border-radius:12px;padding:8px 12px;b
 #turn-preview{display:flex;align-items:center;gap:8px;margin:12px 0;color:#c1e6f4}
 #turn-arrow{padding:3px 9px;background:#264a5e;border-radius:10px;color:#ffdf91}.actions{margin-top:12px}
 #feedback[data-kind=success]{color:#a0ffcf}#feedback[data-kind=error]{color:#ffd4bc}
+
+.pawn{pointer-events:none;background:#ffe7a3e6}
+.direction-sprite,.car{position:absolute;inset:8%;background-repeat:no-repeat;image-rendering:pixelated}
+.pawn .direction-sprite{filter:drop-shadow(0 1px 1px #182b34aa)}
+.car{transform:rotate(var(--rotation,0deg))}
+.car-body{position:absolute;inset:6% 19%;border-radius:25% 25% 19% 19%;background:#ffa937;border:2px solid #774100;box-shadow:-4px 3px 0 -1px #253328,4px 3px 0 -1px #253328}
+.car-body i{position:absolute;inset:25% 12% 43%;background:#ffe4a9;border:1px solid #9d6323;border-radius:25%}
+.car-body b,.car-body em{position:absolute;top:4%;width:24%;height:15%;background:#fff1bc;border-radius:35%}
+.car-body b{left:6%}.car-body em{right:6%}
+.facing{z-index:1;display:grid;place-items:center;width:clamp(12px,2.1vw,21px);aspect-ratio:1;border-radius:50%;background:#142f28;box-shadow:0 0 0 1px #fff;line-height:1}
+.pawn[data-facing="0"] .facing{top:-3px;bottom:auto;right:50%;transform:translateX(50%)}
+.pawn[data-facing="1"] .facing{right:-3px;bottom:50%;transform:translateY(50%)}
+.pawn[data-facing="2"] .facing{bottom:-3px;right:50%;transform:translateX(50%)}
+.pawn[data-facing="3"] .facing{left:-3px;right:auto;bottom:50%;transform:translateY(50%)}
+.character-trigger{display:inline-flex;align-items:center;gap:8px}.character-control{margin-top:12px;justify-content:flex-start}
+#character-picker{width:min(510px,calc(100% - 24px));border-radius:20px;border:1px solid #acd9d4;background:#102637;color:#f8fbff;padding:16px}
+#character-picker h2{margin:0}#character-picker::backdrop{background:#05101bdd}
+#character-options{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px}
+#character-options button{display:grid;justify-items:center;gap:6px;padding:6px 0;font-size:.9rem}
+#character-options button[aria-pressed=true]{border:2px solid #9cf2ca;background:#255049}
+.choice-icon,#turn-arrow{position:relative;width:48px;aspect-ratio:1;border-radius:9px;background:#ffe7a3}
+.character-trigger .choice-icon{width:28px}
+#turn-arrow{display:grid;place-items:center;padding:0}
+@media(max-width:520px){.pawn[data-facing] .facing{font-size:.66rem}}
 </style>
 <main>
 <header><strong class="brand"><span class="badge" aria-hidden="true">✦</span>ivan’s learning-explorer</strong><div class="row"><span id="identity"></span><button id="switch" hidden>切換學生</button></div></header>
@@ -39,11 +63,12 @@ button,select{font:inherit;min-height:44px;border-radius:12px;padding:8px 12px;b
 <h2>排指令卡，到達終點</h2>
 <p>每回合有三個障礙物。用跳躍卡跨過前方一個障礙，再用最少指令到達旗仔。</p>
 <form id="entry" class="fields"><label>班別<select id="class" required><option value="">選擇班別</option><option>4A</option><option>4B</option><option>4C</option></select></label><label>學號<select id="number" required><option value="">選擇學號</option></select></label><button class="primary">開始探險</button></form>
+<div class="row character-control"><button id="welcome-character" type="button" class="character-trigger">選擇角色</button></div>
 </section>
 <section id="game" hidden>
 <div class="row scenes"><strong id="scene"></strong><span id="dimensions"></span></div>
 <div class="layout">
-<section class="panel" aria-label="迷宮地圖"><div class="stats"><div>目標指令<br><strong id="target"></strong></div><div>已排指令<br><strong id="count"></strong></div></div><div class="board-frame"><div id="board" role="img"></div></div><p class="legend accent" id="facing-label"></p><p class="legend"><small id="legend"></small></p></section>
+<section class="panel" aria-label="迷宮地圖"><div class="stats"><div>目標指令<br><strong id="target"></strong></div><div>已排指令<br><strong id="count"></strong></div></div><div class="board-frame"><div id="board" role="img"></div></div><div class="row character-control"><span class="accent" id="facing-label"></span><button id="game-character" type="button" class="character-trigger">換角色</button></div><p class="legend"><small id="legend"></small></p></section>
 <section class="panel"><h2>排好你的指令卡</h2><small>每張卡算一步，包括原地轉向。跳躍要面向障礙，並在它後面一格落地。</small><h3 class="palette-label">指令卡</h3><div id="palette" class="cards"></div><h3 class="palette-label">指令順序</h3>
 <div id="program" class="program" aria-label="指令列，按卡選取"></div>
 <div id="edits" class="actions edits" hidden><button id="insert" aria-pressed="false">在前面插入</button><button id="remove">刪除這張</button></div>
@@ -53,7 +78,17 @@ button,select{font:inherit;min-height:44px;border-radius:12px;padding:8px 12px;b
 </div>
 </section>
 </main>
-<script>
+<dialog id="character-picker" aria-labelledby="character-title">
+<form method="dialog" class="row"><h2 id="character-title">選擇迷宮角色</h2><button>關閉</button></form>
+<div id="character-options"></div>
+</dialog>
+<template id="car-template"><span class="car" aria-hidden="true"><span class="car-body"><i></i><b></b><em></em></span></span></template>
+<script type="module">
+import {characters,directionSprite} from '../maze-cards/pokemon.js?v=3';
+
+const spriteBase=new URL('../maze-cards/',import.meta.url);
+const spriteUrl=sprite=>new URL(sprite.url,spriteBase).href;
+
 const $=id=>document.getElementById(id);
 const scenes=[
  ['雨林遺跡','🪵','倒木','#28a668','radial-gradient(at 80% 0%,#39784c,#072c29)'],
@@ -138,6 +173,47 @@ function buildRound(round,seed){
 for(let n=1;n<=25;n++)$('number').add(new Option(n+' 號',n));
 let profile,progress,map,program=[],position,trail,playing=false,won=false,version=0;
 let active=-1,selected=-1,inserting=false,ended=false,hit=false;
+let character=characters[0];
+let renderedPreview='';
+
+function characterArt(item,direction){
+ if(!item.id){
+  const car=$('car-template').content.firstElementChild.cloneNode(true);
+  car.style.setProperty('--rotation',direction*90+'deg');
+  return car;
+ }
+ const sprite=directionSprite(item.id,direction),icon=document.createElement('span');
+ icon.className='direction-sprite';
+ icon.style.backgroundImage='url("'+spriteUrl(sprite)+'")';
+ icon.style.backgroundSize=sprite.size;
+ icon.style.backgroundPosition=sprite.position;
+ icon.setAttribute('aria-hidden','true');
+ return icon;
+}
+function characterBadge(item){
+ const badge=document.createElement('span');
+ badge.className='choice-icon';badge.append(characterArt(item,2));
+ return badge;
+}
+function updateCharacterButtons(){
+ $('welcome-character').replaceChildren(characterBadge(character),'選擇角色 · '+character.name);
+ $('game-character').replaceChildren(characterBadge(character),'換角色');
+}
+function selectCharacter(item){
+ character=item;updateCharacterButtons();
+ if(map){scene();draw();render();}
+}
+function openCharacterPicker(){
+ const picker=$('character-picker');
+ $('character-options').replaceChildren(...characters.map(item=>{
+  const button=makeButton(item.name,()=>{selectCharacter(item);picker.close();});
+  button.setAttribute('aria-pressed',String(item===character));
+  button.prepend(characterBadge(item));
+  return button;
+ }));
+ picker.showModal();
+}
+
 const saveKey=()=> 'maze-adventure-v1:'+profile;
 const seed=()=>crypto.getRandomValues(new Uint32Array(1))[0];
 function save(){
@@ -158,7 +234,7 @@ function scene(){
  document.body.style.setProperty('--tile',color);
  $('scene').textContent='第 '+(progress.round+1)+' / '+sizes.length+' 回合 · '+icon+' '+title;
  $('dimensions').textContent=map.w+' 欄 × '+map.h+' 行';
- $('legend').textContent='🤖 探險車　🏁 終點　'+icon+' '+obstacle+' × 3';
+ $('legend').textContent=character.name+'　🏁 終點　'+icon+' '+obstacle+' × 3';
  $('target').textContent=map.target+' 步';
  return icon;
 }
@@ -166,10 +242,10 @@ function message(s,kind=''){$('feedback').textContent=s;$('feedback').dataset.ki
 function draw(previous,card){
  const board=$('board'),icon=scenes[progress.round%scenes.length][1];
  board.style.setProperty('--cols',map.w);
- $('facing-label').textContent=arrows[position.d]+' 探險車朝'+directions[position.d]+'方';
+ $('facing-label').textContent=arrows[position.d]+' '+character.name+'朝'+directions[position.d]+'方';
  const location=p=>'第 '+(p.y+1)+' 行第 '+(p.x+1)+' 欄';
  const blocks=[...map.blocks].map(s=>{const [x,y]=s.split(',').map(Number);return location({x,y});});
- board.setAttribute('aria-label','探險車在'+location(position)+'，朝向'+['上','右','下','左'][position.d]+'。終點在'+location(map.exit)+'。障礙在'+blocks.join('、')+'。');
+ board.setAttribute('aria-label',character.name+'在'+location(position)+'，朝向'+['上','右','下','左'][position.d]+'。終點在'+location(map.exit)+'。障礙在'+blocks.join('、')+'。');
  const cells=Array.from({length:map.w*map.h},(_,i)=>{
   const p={x:i%map.w,y:Math.floor(i/map.w)},el=document.createElement('div');
   el.className='cell';
@@ -179,7 +255,8 @@ function draw(previous,card){
   if(map.blocks.has(key(p))){el.classList.add('block');el.textContent=icon;}
   if(same(p,position)){
    const pawn=document.createElement('span');
-   pawn.className='pawn';pawn.textContent='🤖';
+   pawn.className='pawn';pawn.dataset.facing=position.d;
+   pawn.append(characterArt(character,position.d));
    const facing=document.createElement('span');
    facing.className='facing';facing.textContent=arrows[position.d];
    pawn.append(facing);el.replaceChildren(pawn);
@@ -195,7 +272,12 @@ function draw(previous,card){
  let frames=[{transform:'translate('+x+'px,'+y+'px)'},{transform:'translate(0,0)'}];
  if(hit)frames=[{transform:'translateX(0)'},{transform:'translateX(5px)'},{transform:'translateX(-5px)'},{transform:'translateX(0)'}];
  else if(card==='J')frames.splice(1,0,{transform:'translate('+x/2+'px,'+(y/2-after.height*.55)+'px) scale(1.18)'});
- else if(card==='L'||card==='R')frames=[{transform:'rotate('+(card==='L'?28:-28)+'deg)'},{transform:'rotate(0deg)'}];
+ else if(card==='L'||card==='R'){
+  if(character.id)return;
+  const from=(position.d*90+(card==='L'?90:-90))+'deg',to=position.d*90+'deg';
+  pawn.querySelector('.car').animate([{transform:'rotate('+from+')'},{transform:'rotate('+to+')'}],{duration:270,easing:'ease-out'});
+  return;
+ }
  pawn.animate(frames,{duration:card==='J'?390:270,easing:'ease-out'});
 }
 const makeButton=(text,action)=>{
@@ -241,6 +323,7 @@ function render(){
  for(const btn of $('palette').children)btn.disabled=playing||won||program.length>=limit();
  $('run').disabled=playing||won||!program.length;
  $('step').disabled=$('run').disabled;
+ $('game-character').disabled=playing;
  $('rewind').disabled=playing||won||active<0;
  $('clear').disabled=playing||won||!program.length;
  $('next').hidden=!won;
@@ -252,8 +335,14 @@ function render(){
   if(card==='L'||card==='R'){facing=(facing+(card==='L'?3:1))%4;last=i;}
  }
  $('turn-preview').hidden=last<0;
- $('turn-arrow').textContent=arrows[facing];
- $('turn-text').textContent='轉向預覽 · 第 '+(last+1)+' 張卡後朝'+directions[facing]+'方';
+ if(last>=0){
+  const previewKey=character.id+','+facing;
+  if(renderedPreview!==previewKey){
+   $('turn-arrow').replaceChildren(characterArt(character,facing));
+   renderedPreview=previewKey;
+  }
+  $('turn-text').textContent='轉向預覽 · 第 '+(last+1)+' 張卡後，'+character.name+'朝'+directions[facing]+'方 '+arrows[facing];
+ }
 }
 function resetPosition(){
  position=map.start;trail=new Set([key(position)]);
@@ -295,7 +384,7 @@ function advance(){
  const card=program[++active],previous=position,next=move(map,position,card);
  if(!next){
   hit=true;ended=true;
-  message('第 '+(active+1)+' 張卡遇到阻礙。'+(card==='J'?'跳躍須跨過前方一個障礙，並安全落地。':'檢查探險車的朝向、障礙和地圖邊界。'),'error');
+  message('第 '+(active+1)+' 張卡遇到阻礙。'+(card==='J'?'跳躍須跨過前方一個障礙，並安全落地。':'檢查'+character.name+'的朝向、障礙和地圖邊界。'),'error');
  }else{
   position=next;trail.add(key(next));
   if(same(position,map.exit)){
@@ -310,9 +399,9 @@ function advance(){
     message(steps===map.target?'已找到最短路線！移除終點之後多出的指令卡，再試一次。':'已到達終點！今次用了 '+steps+' 步。試試用 '+map.target+' 步過關。','error');
    }
   }else if(active+1===program.length){
-   ended=true;message('指令用完了，探險車還未到終點。再排幾張卡試試！','error');
+   ended=true;message('指令用完了，'+character.name+'還未到終點。再排幾張卡試試！','error');
   }else{
-   message('已執行第 '+(active+1)+' 張「'+cards[card][1]+'」卡。探險車朝'+directions[position.d]+'方。');
+   message('已執行第 '+(active+1)+' 張「'+cards[card][1]+'」卡。'+character.name+'朝'+directions[position.d]+'方。');
   }
  }
  draw(previous,card);render();
@@ -331,4 +420,7 @@ async function execute(all){
 }
 $('run').onclick=()=>execute(true);
 $('step').onclick=()=>execute(false);
+$('welcome-character').onclick=openCharacterPicker;
+$('game-character').onclick=openCharacterPicker;
+updateCharacterButtons();
 </script>
