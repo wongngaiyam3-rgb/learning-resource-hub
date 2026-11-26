@@ -18,9 +18,22 @@ button,select{font:inherit;min-height:44px;border-radius:12px;padding:8px 12px;b
 .cards button{flex:1 0 28%;display:grid;gap:2px}.cards b{font-size:1.45rem}.program{min-height:62px;background:#09151f;border:1px dashed #7299a3;border-radius:12px;padding:8px;margin:10px 0;display:flex;flex-wrap:wrap;gap:5px;align-items:center}.program button{padding:4px 8px;min-height:38px}.program .active{background:#ffd97a;color:#15202a}
 #feedback{min-height:3em;margin-bottom:0}.stats{display:flex;gap:18px;margin-bottom:12px}.stats strong{font-size:1.35rem}.legend{margin:10px 0 0} .scenes{color:#d5edff;margin-bottom:16px}
 @media(max-width:720px){.layout{grid-template-columns:1fr}body{background-attachment:scroll}}
+
+.brand{display:flex;align-items:center;gap:10px}.badge{display:grid;place-items:center;width:38px;height:38px;background:#ffdb86;color:#192f40;border-radius:11px;font-size:24px}
+.scenes{padding:12px 16px;border-radius:14px;background:#102334e8;border:1px solid #ffffff42;border-left:5px solid var(--tile)}
+.board-frame{padding:11px;background:repeating-linear-gradient(135deg,#ffffff0b 0 6px,transparent 6px 12px),#080f18;border-radius:16px;border:1px solid #ffffff32}
+.cell.start:before{content:'起';position:absolute;top:0;left:2px;font-size:.7rem;color:#fff}
+.pawn{position:relative;z-index:2;display:grid;place-items:center;width:90%;height:90%;border-radius:50%;background:#ffe7a3;border:2px solid #fff1c3;box-shadow:0 3px 6px #000b}
+.facing{right:-5px;bottom:-3px}.palette-label{margin:14px 0 6px}.cards button{border-bottom-width:4px;min-height:60px}
+.card-F,.card-B{background:#1e5347;border-color:#77d5aa}.card-L,.card-R{background:#303f74;border-color:#93b3ff}.card-J{background:#694728;border-color:#ffd57d}
+.program{max-height:178px;overflow:auto}.program button{position:relative;min-width:45px}.program small{font-size:.68rem;margin-right:3px}
+.program .selected{outline:2px solid #a3ffe0}.program .error{background:#8f303a;color:white}.edits{margin:0 0 10px}
+#turn-preview{display:flex;align-items:center;gap:8px;margin:12px 0;color:#c1e6f4}
+#turn-arrow{padding:3px 9px;background:#264a5e;border-radius:10px;color:#ffdf91}.actions{margin-top:12px}
+#feedback[data-kind=success]{color:#a0ffcf}#feedback[data-kind=error]{color:#ffd4bc}
 </style>
 <main>
-<header><strong>ivan’s learning-explorer</strong><div class="row"><span id="identity"></span><button id="switch" hidden>切換學生</button></div></header>
+<header><strong class="brand"><span class="badge" aria-hidden="true">✦</span>ivan’s learning-explorer</strong><div class="row"><span id="identity"></span><button id="switch" hidden>切換學生</button></div></header>
 <h1>越障探險隊</h1>
 <section id="welcome" class="panel">
 <h2>排指令卡，到達終點</h2>
@@ -30,10 +43,12 @@ button,select{font:inherit;min-height:44px;border-radius:12px;padding:8px 12px;b
 <section id="game" hidden>
 <div class="row scenes"><strong id="scene"></strong><span id="dimensions"></span></div>
 <div class="layout">
-<section class="panel" aria-label="迷宮地圖"><div class="stats"><div>目標指令<br><strong id="target"></strong></div><div>已排指令<br><strong id="count"></strong></div></div><div id="board" role="img"></div><p class="legend"><small id="legend"></small></p></section>
-<section class="panel"><h2>排好你的指令卡</h2><small>每張卡算一步，包括原地轉向。跳躍要面向障礙，並在它後面一格落地。</small><p id="palette" class="cards"></p>
-<div id="program" class="program" aria-label="指令列，按卡移除"></div>
-<div class="actions"><button id="run" class="primary">執行指令</button><button id="clear">清空指令</button><button id="next" class="primary" hidden>下一回合</button></div>
+<section class="panel" aria-label="迷宮地圖"><div class="stats"><div>目標指令<br><strong id="target"></strong></div><div>已排指令<br><strong id="count"></strong></div></div><div class="board-frame"><div id="board" role="img"></div></div><p class="legend accent" id="facing-label"></p><p class="legend"><small id="legend"></small></p></section>
+<section class="panel"><h2>排好你的指令卡</h2><small>每張卡算一步，包括原地轉向。跳躍要面向障礙，並在它後面一格落地。</small><h3 class="palette-label">指令卡</h3><div id="palette" class="cards"></div><h3 class="palette-label">指令順序</h3>
+<div id="program" class="program" aria-label="指令列，按卡選取"></div>
+<div id="edits" class="actions edits" hidden><button id="insert" aria-pressed="false">在前面插入</button><button id="remove">刪除這張</button></div>
+<div id="turn-preview" hidden><strong id="turn-arrow"></strong><small id="turn-text"></small></div>
+<div class="actions"><button id="run" class="primary">執行全部</button><button id="step">逐步執行</button><button id="rewind">回到起點</button><button id="clear">清空指令</button><button id="next" class="primary" hidden>下一回合</button></div>
 <p id="feedback" role="status" aria-live="polite"></p></section>
 </div>
 </section>
@@ -54,6 +69,7 @@ const sizes=[[6,5],[6,6],[6,6],[7,6],[7,7],[8,7],[8,8],[9,8],[9,9],[10,10]];
 const cards={F:['↑','前進'],B:['↓','後退'],L:['↶','左轉'],R:['↷','右轉'],J:['⤴','跳躍']};
 const vectors=[[0,-1],[1,0],[0,1],[-1,0]];
 const arrows=['↑','→','↓','←'];
+const directions=['上','右','下','左'];
 const key=({x,y})=>x+','+y;
 const same=(a,b)=>a.x===b.x&&a.y===b.y;
 function move(map,p,card){
@@ -121,6 +137,7 @@ function buildRound(round,seed){
 }
 for(let n=1;n<=25;n++)$('number').add(new Option(n+' 號',n));
 let profile,progress,map,program=[],position,trail,playing=false,won=false,version=0;
+let active=-1,selected=-1,inserting=false,ended=false,hit=false;
 const saveKey=()=> 'maze-adventure-v1:'+profile;
 const seed=()=>crypto.getRandomValues(new Uint32Array(1))[0];
 function save(){
@@ -139,16 +156,17 @@ function scene(){
  const [title,icon,obstacle,color,background]=scenes[i];
  document.body.style.setProperty('--scene','url('+artworks[i]+'),'+background);
  document.body.style.setProperty('--tile',color);
- $('scene').textContent='第 '+(progress.round+1)+' / '+sizes.length+' 回合 · '+title;
+ $('scene').textContent='第 '+(progress.round+1)+' / '+sizes.length+' 回合 · '+icon+' '+title;
  $('dimensions').textContent=map.w+' 欄 × '+map.h+' 行';
  $('legend').textContent='🤖 探險車　🏁 終點　'+icon+' '+obstacle+' × 3';
  $('target').textContent=map.target+' 步';
  return icon;
 }
-function message(s){$('feedback').textContent=s;}
-function draw(){
+function message(s,kind=''){$('feedback').textContent=s;$('feedback').dataset.kind=kind;}
+function draw(previous,card){
  const board=$('board'),icon=scenes[progress.round%scenes.length][1];
  board.style.setProperty('--cols',map.w);
+ $('facing-label').textContent=arrows[position.d]+' 探險車朝'+directions[position.d]+'方';
  const location=p=>'第 '+(p.y+1)+' 行第 '+(p.x+1)+' 欄';
  const blocks=[...map.blocks].map(s=>{const [x,y]=s.split(',').map(Number);return location({x,y});});
  board.setAttribute('aria-label','探險車在'+location(position)+'，朝向'+['上','右','下','左'][position.d]+'。終點在'+location(map.exit)+'。障礙在'+blocks.join('、')+'。');
@@ -160,14 +178,25 @@ function draw(){
   if(same(p,map.exit)){el.classList.add('goal');el.textContent='🏁';}
   if(map.blocks.has(key(p))){el.classList.add('block');el.textContent=icon;}
   if(same(p,position)){
-   el.textContent='🤖';
+   const pawn=document.createElement('span');
+   pawn.className='pawn';pawn.textContent='🤖';
    const facing=document.createElement('span');
    facing.className='facing';facing.textContent=arrows[position.d];
-   el.append(facing);
+   pawn.append(facing);el.replaceChildren(pawn);
   }
   return el;
  });
  board.replaceChildren(...cells);
+ if(!previous||matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+ const pawn=board.querySelector('.pawn');
+ const before=cells[previous.y*map.w+previous.x].getBoundingClientRect();
+ const after=cells[position.y*map.w+position.x].getBoundingClientRect();
+ const x=before.left-after.left,y=before.top-after.top;
+ let frames=[{transform:'translate('+x+'px,'+y+'px)'},{transform:'translate(0,0)'}];
+ if(hit)frames=[{transform:'translateX(0)'},{transform:'translateX(5px)'},{transform:'translateX(-5px)'},{transform:'translateX(0)'}];
+ else if(card==='J')frames.splice(1,0,{transform:'translate('+x/2+'px,'+(y/2-after.height*.55)+'px) scale(1.18)'});
+ else if(card==='L'||card==='R')frames=[{transform:'rotate('+(card==='L'?28:-28)+'deg)'},{transform:'rotate(0deg)'}];
+ pawn.animate(frames,{duration:card==='J'?390:270,easing:'ease-out'});
 }
 const makeButton=(text,action)=>{
  const btn=document.createElement('button');
@@ -177,31 +206,65 @@ const limit=()=>map.w*map.h*2;
 for(const [code,[symbol,name]] of Object.entries(cards)){
  const btn=makeButton(name,()=>{
   if(program.length>=limit())return;
-  program.push(code);render();
+  program.splice(inserting?selected:program.length,0,code);resetEditor();
  });
  const icon=document.createElement('b');
  icon.textContent=symbol;icon.setAttribute('aria-hidden','true');btn.prepend(icon);$('palette').append(btn);
 }
-function render(active=-1){
+function render(){
  $('count').textContent=program.length+' 步';
- $('program').replaceChildren(...program.map((code,i)=>{
+ const sequence=$('program'), previousScroll=sequence.scrollTop;
+ sequence.replaceChildren(...program.map((code,i)=>{
   const [symbol,name]=cards[code];
-  const btn=makeButton(symbol,()=>{program.splice(i,1);render();});
-  btn.setAttribute('aria-label','移除第 '+(i+1)+' 張 '+name+'卡');
+  const btn=makeButton(symbol,()=>{
+   selected=selected===i?-1:i;inserting=false;render();
+   sequence.children[i]?.focus({preventScroll:true});
+  });
+  const number=document.createElement('small');
+  number.textContent=i+1;btn.prepend(number);
+  btn.classList.add('card-'+code);
+  btn.setAttribute('aria-label','第 '+(i+1)+' 張，'+name);
+  btn.setAttribute('aria-pressed',String(selected===i));
   btn.disabled=playing||won;
-  if(i===active)btn.classList.add('active');
+  if(i===active)btn.classList.add(hit?'error':'active');
+  if(i===selected)btn.classList.add('selected');
   return btn;
  }));
- if(!program.length)$('program').textContent='點選上方的指令卡，依次排入這裏。';
+ sequence.scrollTop=previousScroll;
+ if(active>=0){
+  const current=sequence.children[active];
+  if(current&&current.getBoundingClientRect().bottom>sequence.getBoundingClientRect().bottom){
+   sequence.scrollTop+=current.getBoundingClientRect().bottom-sequence.getBoundingClientRect().bottom;
+  }
+ }
+ if(!program.length)sequence.textContent='點選上方的指令卡，依次排入這裏。';
  for(const btn of $('palette').children)btn.disabled=playing||won||program.length>=limit();
  $('run').disabled=playing||won||!program.length;
+ $('step').disabled=$('run').disabled;
+ $('rewind').disabled=playing||won||active<0;
  $('clear').disabled=playing||won||!program.length;
  $('next').hidden=!won;
  $('next').textContent=progress.round===sizes.length-1?'重新探險':'下一回合';
+ $('edits').hidden=selected<0||playing||won;
+ $('insert').setAttribute('aria-pressed',String(inserting));
+ let facing=map.start.d,last=-1;
+ for(const [i,card] of program.entries()){
+  if(card==='L'||card==='R'){facing=(facing+(card==='L'?3:1))%4;last=i;}
+ }
+ $('turn-preview').hidden=last<0;
+ $('turn-arrow').textContent=arrows[facing];
+ $('turn-text').textContent='轉向預覽 · 第 '+(last+1)+' 張卡後朝'+directions[facing]+'方';
 }
-function resetPosition(){position=map.start;trail=new Set([key(position)]);}
+function resetPosition(){
+ position=map.start;trail=new Set([key(position)]);
+ active=-1;ended=false;hit=false;
+}
+function resetEditor(){
+ selected=-1;inserting=false;resetPosition();draw();render();
+ message('排好指令後，按「執行全部」或「逐步執行」。');
+}
 function loadRound(){
- map=buildRound(progress.round,progress.seed);program=[];playing=false;won=progress.won;
+ map=buildRound(progress.round,progress.seed);program=[];selected=-1;inserting=false;playing=false;won=progress.won;
  resetPosition();
  if(won)position=shortest(map).reduce((p,card)=>move(map,p,card),map.start);
  scene();draw();render();
@@ -218,34 +281,54 @@ $('entry').onsubmit=event=>{
 $('switch').onclick=()=>{
  version++;$('game').hidden=true;$('welcome').hidden=false;$('identity').textContent='';$('switch').hidden=true;$('entry').reset();
 };
-$('clear').onclick=()=>{program=[];resetPosition();draw();render();message('指令已清空。');};
+$('clear').onclick=()=>{program=[];resetEditor();message('指令已清空。');};
+$('rewind').onclick=resetEditor;
+$('remove').onclick=()=>{program.splice(selected,1);resetEditor();};
+$('insert').onclick=()=>{
+ inserting=!inserting;render();
+ message(inserting?'點選一張指令卡，插入第 '+(selected+1)+' 張卡之前。':'已取消插入。');
+};
 $('next').onclick=()=>{
  progress={round:(progress.round+1)%sizes.length,seed:seed(),won:false};save();loadRound();
 };
-$('run').onclick=async()=>{
- const run=++version;playing=true;resetPosition();draw();message('探險車正在執行指令。');
- for(let i=0;i<program.length;i++){
-  render(i);
-  await new Promise(resolve=>setTimeout(resolve,260));
-  if(run!==version)return;
-  const card=program[i],next=move(map,position,card);
-  if(!next){
-   message(card==='J'?'這次跳躍失敗了。看看車頭前面有沒有障礙，以及後面一格是否可以落地。':'前路被擋住了。試試轉向，或者面向障礙後用跳躍卡。');
-   playing=false;render();return;
-  }
-  position=next;trail.add(key(position));draw();
+function advance(){
+ const card=program[++active],previous=position,next=move(map,position,card);
+ if(!next){
+  hit=true;ended=true;
+  message('第 '+(active+1)+' 張卡遇到阻礙。'+(card==='J'?'跳躍須跨過前方一個障礙，並安全落地。':'檢查探險車的朝向、障礙和地圖邊界。'),'error');
+ }else{
+  position=next;trail.add(key(next));
   if(same(position,map.exit)){
-   won=i+1===map.target&&program.length===map.target;
+   ended=true;
+   const steps=active+1;
+   won=steps===map.target&&program.length===map.target;
    if(won){
     progress.won=true;
     const stored=save();
-    message((progress.round===sizes.length-1?'十個回合全部完成！':'成功！你用 '+map.target+' 步到達終點。')+(stored?'':'　此裝置未能儲存進度。'));
+    message((progress.round===sizes.length-1?'十個回合全部完成！':'成功！你用 '+map.target+' 步到達終點。')+(stored?'':'　此裝置未能儲存進度。'),'success');
    }else{
-    message(i+1===map.target?'你已找到最短路線！移除到達終點後多出的卡，再執行一次。':'你已到達終點！用了 '+(i+1)+' 步，試試用 '+map.target+' 步過關。');
+    message(steps===map.target?'已找到最短路線！移除終點之後多出的指令卡，再試一次。':'已到達終點！今次用了 '+steps+' 步。試試用 '+map.target+' 步過關。','error');
    }
-   playing=false;render();return;
+  }else if(active+1===program.length){
+   ended=true;message('指令用完了，探險車還未到終點。再排幾張卡試試！','error');
+  }else{
+   message('已執行第 '+(active+1)+' 張「'+cards[card][1]+'」卡。探險車朝'+directions[position.d]+'方。');
   }
  }
- playing=false;render();message('指令用完了，探險車還未到終點。再排幾張卡試試！');
-};
+ draw(previous,card);render();
+ return card==='J'?410:300;
+}
+async function execute(all){
+ const run=++version;
+ if(all||ended)resetPosition();
+ selected=-1;inserting=false;playing=true;draw();
+ do {
+  const duration=advance();
+  await new Promise(resolve=>setTimeout(resolve,duration));
+  if(run!==version)return;
+ }while(all&&!ended);
+ playing=false;render();
+}
+$('run').onclick=()=>execute(true);
+$('step').onclick=()=>execute(false);
 </script>
