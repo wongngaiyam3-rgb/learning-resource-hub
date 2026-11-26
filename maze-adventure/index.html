@@ -16,12 +16,13 @@ button,select{font:inherit;min-height:44px;border-radius:12px;padding:8px 12px;b
 .cell:nth-child(even){background:color-mix(in srgb,var(--tile) 36%,#142837)}.cell.trail{box-shadow:inset 0 0 0 2px #91efbc}.cell.goal{background:#684f20}.cell.block{background:#3c2632;box-shadow:inset 0 0 0 1px #f2bb8a65}.cell.start{outline:1px dashed #c2e7ec;outline-offset:-2px}
 .facing{position:absolute;bottom:0;right:0;background:#101e28;color:#baffdc;border-radius:5px;font:bold clamp(.65rem,2vw,1rem) system-ui;padding:0 2px}
 .cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(4px,1vw,8px)}
-.cards button{display:grid;justify-items:center;align-content:center;gap:4px;min-width:0;min-height:clamp(66px,9vw,92px);padding:7px 1px;border-radius:15px;color:#123125;background:var(--card-fill);border:1px solid var(--card-edge);box-shadow:0 4px 0 #07131a80;font-size:clamp(.8rem,2vw,1.05rem);line-height:1.2;white-space:nowrap}
+.cards button{display:grid;justify-items:center;align-content:center;gap:4px;min-width:0;min-height:clamp(66px,9vw,92px);padding:7px 1px;border-radius:15px;color:#123125;background:var(--card-fill,#dce9ed);border:2px solid var(--card-edge,#afc8ce);box-shadow:0 4px 0 #07131a80;font-size:clamp(.8rem,2vw,1.05rem);line-height:1.2;white-space:nowrap}
 .cards b{font-size:clamp(1.65rem,4.5vw,2.4rem);line-height:1}
-.cards .card-F{--card-fill:#caefb9;--card-edge:#a9d894}
-.cards .card-B{--card-fill:#bfe2fa;--card-edge:#a3c9df}
-.cards .card-L{--card-fill:#e6d6fc;--card-edge:#ceb7e9}
-.cards .card-R{--card-fill:#ffd5cb;--card-edge:#edb5a8}
+.cards .card-F{--card-fill:#adeda2;--card-edge:#5bbb63}
+.cards .card-B{--card-fill:#9edcff;--card-edge:#55a8dd}
+.cards .card-L{--card-fill:#ffe45c;--card-edge:#dba810}
+.cards .card-R{--card-fill:#ffab99;--card-edge:#e77b64}
+.cards button:disabled{opacity:.8}
 .cards button:not(:disabled):active{transform:translateY(2px);box-shadow:0 2px 0 #07131a80}
 .program{min-height:62px;background:#09151f;border:1px dashed #7299a3;border-radius:12px;padding:8px;margin:10px 0;display:flex;flex-wrap:wrap;gap:5px;align-items:center}.program button{padding:4px 8px;min-height:38px}.program .active{background:#ffd97a;color:#15202a}
 #feedback{min-height:3em;margin-bottom:0}.stats{display:flex;flex-wrap:wrap;gap:8px 18px;margin-bottom:12px}.stats strong{font-size:1.35rem}.legend{margin:10px 0 0} .scenes{color:#d5edff;margin-bottom:16px}
@@ -33,7 +34,7 @@ button,select{font:inherit;min-height:44px;border-radius:12px;padding:8px 12px;b
 .cell.start:before{content:'起';position:absolute;top:0;left:2px;font-size:.7rem;color:#fff}
 .pawn{position:relative;z-index:2;display:grid;place-items:center;width:90%;height:90%;border-radius:50%;background:#ffe7a3;border:2px solid #fff1c3;box-shadow:0 3px 6px #000b}
 .facing{right:-5px;bottom:-3px}.palette-label{margin:14px 0 6px}
-.card-F,.card-B{background:#1e5347;border-color:#77d5aa}.card-L,.card-R{background:#303f74;border-color:#93b3ff}
+.card-F{background:#1e5347;border-color:#77d5aa}.card-B{background:#214d6b;border-color:#75b8e5}.card-L{background:#614b0c;border-color:#f7d350}.card-R{background:#6c3a32;border-color:#edaa99}
 .program{max-height:178px;overflow:auto}.program button{position:relative;min-width:45px}.program small{font-size:.68rem;margin-right:3px}
 .program .selected{outline:2px solid #a3ffe0}.program .error{background:#8f303a;color:white}.edits{margin:0 0 10px}
 #turn-preview{display:flex;align-items:center;gap:8px;margin:12px 0;color:#c1e6f4}
@@ -70,11 +71,11 @@ button,select{font:inherit;min-height:44px;border-radius:12px;padding:8px 12px;b
 <section id="welcome" class="panel">
 <h2>排指令卡，到達終點</h2>
 <p>每回合有三個障礙物。用指令卡繞過障礙，以最少步數到達旗仔。</p>
-<form id="entry" class="fields"><label>班別<select id="class" required><option value="">選擇班別</option><option>4A</option><option>4B</option><option>4C</option></select></label><label>學號<select id="number" required><option value="">選擇學號</option></select></label><button class="primary">開始探險</button></form>
+<form id="entry" class="fields"><label>班別<select id="class" required><option value="">選擇班別</option><option>2A</option><option>2B</option></select></label><label>學號<select id="number" required><option value="">選擇學號</option></select></label><button class="primary">開始探險</button></form>
 <div class="row character-control"><button id="welcome-character" type="button" class="character-trigger">選擇角色</button></div>
 </section>
 <section id="game" hidden>
-<div class="row scenes"><strong id="scene"></strong><span id="dimensions"></span></div>
+<div class="row scenes"><strong id="scene"></strong><span id="dimensions"></span><small id="sync-status" role="status"></small><button id="retry-sync" type="button" hidden>重試同步</button></div>
 <div class="layout">
 <section class="panel" aria-label="迷宮地圖"><div class="stats"><div>最少步數<br><strong id="target"></strong></div><div>已排指令<br><strong id="count"></strong></div><div>已執行<br><strong id="executed"></strong></div></div><div class="board-frame"><div id="board" role="img"></div></div><div class="row character-control"><span class="accent" id="facing-label"></span><button id="game-character" type="button" class="character-trigger">換角色</button></div><p class="legend"><small id="legend"></small></p></section>
 <section class="panel"><h2>排好你的指令卡</h2><small>前進和後退各移動一格，左右轉向時留在原格。每張卡算一步。</small><h3 class="palette-label">指令卡</h3><div id="palette" class="cards"></div><h3 class="palette-label">指令順序</h3>
@@ -223,6 +224,69 @@ function openCharacterPicker(){
 }
 
 const saveKey=()=> 'maze-adventure-v1:'+profile;
+const progressApi='https://nltqzuhubqhwtfxwuupr.supabase.co/rest/v1/maze_adventure_grade2_rounds';
+const publishableKey='sb_publishable_lnFCcbPSjbJg_z6QG-KZUw__n6rnwll';
+const outboxPrefix='maze-adventure-grade2:pending:';
+const pendingInMemory=new Map();
+let syncing=false,student;
+
+function pendingProgress(){
+ const records=new Map(pendingInMemory);
+ try{
+  for(const name of Object.keys(localStorage)){
+   if(!name.startsWith(outboxPrefix))continue;
+   const record=JSON.parse(localStorage.getItem(name));
+   if(record?.event_id)records.set(record.event_id,record);
+  }
+ }catch{}
+ return [...records.values()];
+}
+function syncStatus(text,retry=false){
+ $('sync-status').textContent=text;
+ $('retry-sync').hidden=!retry;
+}
+function queueCompletion(steps){
+ const record={
+  event_id:crypto.randomUUID(),
+  class_code:student.classCode,
+  student_number:student.number,
+  round_number:progress.round+1,
+  map_seed:progress.seed,
+  steps,
+ };
+ pendingInMemory.set(record.event_id,record);
+ try{localStorage.setItem(outboxPrefix+record.event_id,JSON.stringify(record));}catch{}
+ syncStatus('正在同步學習紀錄…');
+ void flushProgress();
+}
+async function flushProgress(){
+ if(syncing||!student)return;
+ syncing=true;
+ try{
+  for(let records=pendingProgress();records.length;records=pendingProgress()){
+   const record=records[0];
+   const response=await fetch(progressApi,{
+    method:'POST',
+    headers:{apikey:publishableKey,'Content-Type':'application/json',Prefer:'return=minimal'},
+    body:JSON.stringify(record),
+    signal:AbortSignal.timeout(12000),
+   });
+   if(!response.ok){
+    const error=response.status===409?await response.json():null;
+    if(error?.code!=='23505')throw new Error('未能同步');
+   }
+   pendingInMemory.delete(record.event_id);
+   try{localStorage.removeItem(outboxPrefix+record.event_id);}catch{}
+   if(student?.classCode===record.class_code&&student.number===record.student_number){
+    syncStatus('第 '+record.round_number+' 回合已同步');
+   }
+  }
+ }catch{
+  if(student)syncStatus('有紀錄待同步',true);
+ }finally{syncing=false;}
+}
+$('retry-sync').onclick=()=>{syncStatus('正在同步學習紀錄…');void flushProgress();};
+window.addEventListener('online',()=>{void flushProgress();});
 const seed=()=>crypto.getRandomValues(new Uint32Array(1))[0];
 function save(){
  try{localStorage.setItem(saveKey(),JSON.stringify(progress));return true;}
@@ -299,6 +363,7 @@ for(const [code,[symbol,name]] of Object.entries(cards)){
   program.splice(inserting?selected:program.length,0,code);resetEditor();
  });
  const icon=document.createElement('b');
+ btn.classList.add('card-'+code);
  icon.textContent=symbol;icon.setAttribute('aria-hidden','true');btn.prepend(icon);$('palette').append(btn);
 }
 function render(){
@@ -372,13 +437,16 @@ function loadRound(){
 $('entry').onsubmit=event=>{
  event.preventDefault();
  const c=$('class').value,n=Number($('number').value);
- if(!['4A','4B','4C'].includes(c)||!Number.isInteger(n)||n<1||n>25)return;
+ if(!['2A','2B'].includes(c)||!Number.isInteger(n)||n<1||n>25)return;
+ student={classCode:c,number:n};
  profile=c+' · '+n+' 號';progress=restore();save();
+ syncStatus('完成回合後會同步進度');
+ void flushProgress();
  $('identity').textContent=profile;$('switch').hidden=false;$('welcome').hidden=true;$('game').hidden=false;
  loadRound();
 };
 $('switch').onclick=()=>{
- version++;$('game').hidden=true;$('welcome').hidden=false;$('identity').textContent='';$('switch').hidden=true;$('entry').reset();
+ version++;student=null;$('game').hidden=true;$('welcome').hidden=false;$('identity').textContent='';$('switch').hidden=true;$('entry').reset();
 };
 $('clear').onclick=()=>{program=[];resetEditor();message('指令已清空。');};
 $('rewind').onclick=resetEditor;
@@ -405,6 +473,7 @@ function advance(){
     progress.won=true;
     progress.steps=steps;
     const stored=save();
+    queueCompletion(steps);
     message((progress.round===sizes.length-1?'十個回合全部完成！':'成功！你用 '+map.target+' 步到達終點。')+(stored?'':'　此裝置未能儲存進度。'),'success');
    }else{
     const extra=steps-map.target;
