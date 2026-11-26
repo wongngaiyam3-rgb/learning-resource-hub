@@ -16,7 +16,7 @@ button,select{font:inherit;min-height:44px;border-radius:12px;padding:8px 12px;b
 .cell:nth-child(even){background:color-mix(in srgb,var(--tile) 36%,#142837)}.cell.trail{box-shadow:inset 0 0 0 2px #91efbc}.cell.goal{background:#684f20}.cell.block{background:#3c2632;box-shadow:inset 0 0 0 1px #f2bb8a65}.cell.start{outline:1px dashed #c2e7ec;outline-offset:-2px}
 .facing{position:absolute;bottom:0;right:0;background:#101e28;color:#baffdc;border-radius:5px;font:bold clamp(.65rem,2vw,1rem) system-ui;padding:0 2px}
 .cards button{flex:1 0 28%;display:grid;gap:2px}.cards b{font-size:1.45rem}.program{min-height:62px;background:#09151f;border:1px dashed #7299a3;border-radius:12px;padding:8px;margin:10px 0;display:flex;flex-wrap:wrap;gap:5px;align-items:center}.program button{padding:4px 8px;min-height:38px}.program .active{background:#ffd97a;color:#15202a}
-#feedback{min-height:3em;margin-bottom:0}.stats{display:flex;gap:18px;margin-bottom:12px}.stats strong{font-size:1.35rem}.legend{margin:10px 0 0} .scenes{color:#d5edff;margin-bottom:16px}
+#feedback{min-height:3em;margin-bottom:0}.stats{display:flex;flex-wrap:wrap;gap:8px 18px;margin-bottom:12px}.stats strong{font-size:1.35rem}.legend{margin:10px 0 0} .scenes{color:#d5edff;margin-bottom:16px}
 @media(max-width:720px){.layout{grid-template-columns:1fr}body{background-attachment:scroll}}
 
 .brand{display:flex;align-items:center;gap:10px}.badge{display:grid;place-items:center;width:38px;height:38px;background:#ffdb86;color:#192f40;border-radius:11px;font-size:24px}
@@ -68,13 +68,13 @@ button,select{font:inherit;min-height:44px;border-radius:12px;padding:8px 12px;b
 <section id="game" hidden>
 <div class="row scenes"><strong id="scene"></strong><span id="dimensions"></span></div>
 <div class="layout">
-<section class="panel" aria-label="迷宮地圖"><div class="stats"><div>目標指令<br><strong id="target"></strong></div><div>已排指令<br><strong id="count"></strong></div></div><div class="board-frame"><div id="board" role="img"></div></div><div class="row character-control"><span class="accent" id="facing-label"></span><button id="game-character" type="button" class="character-trigger">換角色</button></div><p class="legend"><small id="legend"></small></p></section>
-<section class="panel"><h2>排好你的指令卡</h2><small>每張卡算一步，包括原地轉向。跳躍要面向障礙，並在它後面一格落地。</small><h3 class="palette-label">指令卡</h3><div id="palette" class="cards"></div><h3 class="palette-label">指令順序</h3>
+<section class="panel" aria-label="迷宮地圖"><div class="stats"><div>最少步數<br><strong id="target"></strong></div><div>已排指令<br><strong id="count"></strong></div><div>已執行<br><strong id="executed"></strong></div></div><div class="board-frame"><div id="board" role="img"></div></div><div class="row character-control"><span class="accent" id="facing-label"></span><button id="game-character" type="button" class="character-trigger">換角色</button></div><p class="legend"><small id="legend"></small></p></section>
+<section class="panel"><h2>排好你的指令卡</h2><small>跳躍會跨過一個障礙，落在兩格外，只算一步。前進跟着角色的箭嘴走，左轉和右轉也各算一步。</small><h3 class="palette-label">指令卡</h3><div id="palette" class="cards"></div><h3 class="palette-label">指令順序</h3>
 <div id="program" class="program" aria-label="指令列，按卡選取"></div>
 <div id="edits" class="actions edits" hidden><button id="insert" aria-pressed="false">在前面插入</button><button id="remove">刪除這張</button></div>
 <div id="turn-preview" hidden><strong id="turn-arrow"></strong><small id="turn-text"></small></div>
 <div class="actions"><button id="run" class="primary">執行全部</button><button id="step">逐步執行</button><button id="rewind">回到起點</button><button id="clear">清空指令</button><button id="next" class="primary" hidden>下一回合</button></div>
-<p id="feedback" role="status" aria-live="polite"></p></section>
+<p id="feedback" role="status" aria-live="polite"></p><p id="first-hint" hidden><small>第一關提示：起點和終點在同一直線。走到障礙前一格，再用跳躍卡跨過它。</small></p></section>
 </div>
 </section>
 </main>
@@ -236,6 +236,7 @@ function scene(){
  $('dimensions').textContent=map.w+' 欄 × '+map.h+' 行';
  $('legend').textContent=character.name+'　🏁 終點　'+icon+' '+obstacle+' × 3';
  $('target').textContent=map.target+' 步';
+ $('first-hint').hidden=progress.round!==0;
  return icon;
 }
 function message(s,kind=''){$('feedback').textContent=s;$('feedback').dataset.kind=kind;}
@@ -294,7 +295,9 @@ for(const [code,[symbol,name]] of Object.entries(cards)){
  icon.textContent=symbol;icon.setAttribute('aria-hidden','true');btn.prepend(icon);$('palette').append(btn);
 }
 function render(){
- $('count').textContent=program.length+' 步';
+ $('count').textContent=program.length+' 張';
+ const executed=won?map.target:active+1-(hit?1:0);
+ $('executed').textContent=executed+' 步';
  const sequence=$('program'), previousScroll=sequence.scrollTop;
  sequence.replaceChildren(...program.map((code,i)=>{
   const [symbol,name]=cards[code];
@@ -390,13 +393,14 @@ function advance(){
   if(same(position,map.exit)){
    ended=true;
    const steps=active+1;
-   won=steps===map.target&&program.length===map.target;
+   won=steps===map.target;
    if(won){
     progress.won=true;
     const stored=save();
     message((progress.round===sizes.length-1?'十個回合全部完成！':'成功！你用 '+map.target+' 步到達終點。')+(stored?'':'　此裝置未能儲存進度。'),'success');
    }else{
-    message(steps===map.target?'已找到最短路線！移除終點之後多出的指令卡，再試一次。':'已到達終點！今次用了 '+steps+' 步。試試用 '+map.target+' 步過關。','error');
+    const extra=steps-map.target;
+    message('已到達終點！今次執行了 '+steps+' 步，比最短路線多 '+extra+' 步。目標是 '+map.target+' 步。','error');
    }
   }else if(active+1===program.length){
    ended=true;message('指令用完了，'+character.name+'還未到終點。再排幾張卡試試！','error');
