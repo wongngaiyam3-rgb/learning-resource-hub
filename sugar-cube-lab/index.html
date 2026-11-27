@@ -1,0 +1,522 @@
+<!doctype html>
+<html lang="zh-Hant-HK">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<meta name="referrer" content="no-referrer">
+<title>方糖溶解實驗室</title>
+<style>
+:root{color-scheme:light;--ink:#142740;--muted:#4b6077;--blue:#164677;--navy:#132e50;--line:#d5e2ef;--pale:#e6f1fe;--gold:#ffd292;--green:#006b61;--paper:#fff;font-family:"PingFang HK","Microsoft JhengHei",system-ui,sans-serif;color:var(--ink);background:#f1f6fb;line-height:1.55}
+*{box-sizing:border-box}[hidden]{display:none!important}body{margin:0}h1,h2,h3,p{margin:0}h2{font-size:clamp(1.4rem,3vw,1.85rem);line-height:1.3}h3{font-size:1.2rem}button,input,select{font:inherit}button{cursor:pointer}button:disabled{cursor:default;opacity:.55}a{color:var(--blue)}:focus-visible{outline:3px solid #bc6000;outline-offset:3px}
+.frame{width:min(100% - 42px,1010px);margin-inline:auto}.top{background:#fff;border-bottom:1px solid var(--line)}.top .frame{min-height:65px;display:flex;align-items:center;justify-content:space-between;gap:12px}.brand{display:flex;align-items:center;gap:10px;font-weight:900;text-decoration:none}.logo{display:grid;place-items:center;width:35px;height:35px;background:var(--navy);border-radius:10px;color:var(--gold);font-size:24px}.top a:last-child{font-weight:750;text-decoration:none;text-align:right}
+main{padding:25px 0 32px}.hero{position:relative;isolation:isolate;overflow:hidden;border-radius:23px;padding:35px clamp(20px,5vw,55px);min-height:245px;color:#fff;background:radial-gradient(ellipse at 72% 45%,#266487,#173c5e 46%,#102944 78%)}.hero h1{font-size:clamp(2.3rem,6vw,4rem);font-weight:900;line-height:1.15;letter-spacing:.045em;margin:8px 0 12px}.hero p{max-width:30ch;color:#eaf3fb}.hero .kicker{color:var(--gold);font-weight:850;letter-spacing:.13em;font-size:.86rem}
+.art{position:absolute;inset:0 0 0 48%;z-index:-1;background-image:radial-gradient(#dbf3ff55 1px,transparent 1px);background-size:18px 18px;mask-image:linear-gradient(90deg,transparent,#000 22%)}.orbit{position:absolute;top:50%;left:53%;transform:translate(-50%,-50%) rotate(-17deg);border:1px solid #a9ddf47d;width:68%;height:68%;border-radius:50%}.glass{position:absolute;top:58%;left:53%;transform:translate(-50%,-50%);width:136px;height:131px;border:3px solid #beefffe0;border-radius:5px 5px 21px 21px;background:linear-gradient(121deg,#f1ffff4d,#aaf7ff0c 47%,#f1ffff34);overflow:hidden;box-shadow:0 15px 25px #0b24476b}.water{position:absolute;inset:44% 0 -10px;background:linear-gradient(#7ce7fba8,#1ea9d7b0);border-top:3px solid #aef8ff;transform:skewY(-6deg)}.scale{position:absolute;height:70px;width:17px;right:9px;top:20px;background:repeating-linear-gradient(to bottom,#e8fbffc4 0 2px,transparent 2px 14px)}.spoon{position:absolute;left:56%;top:14%;height:159px;width:10px;transform:rotate(26deg);background:linear-gradient(90deg,#97b8c8,#f0f9f9,#95b6bd);border-radius:8px}.cube{position:absolute;width:49px;height:49px;border-radius:9px;border:2px solid #fff2d9;background:radial-gradient(#c994663b 1px,transparent 1px) 0 0/5px 5px,linear-gradient(145deg,#fff6dd,#f4d4a5);box-shadow:inset 0 -5px #82562924,4px 7px 16px #0c203972}.cube-a{top:22%;left:25%;transform:rotate(-17deg)}.cube-b{top:58%;left:77%;width:31px;height:31px;transform:rotate(20deg)}.cube-c{bottom:14px;left:21px;width:28px;height:28px;transform:rotate(-10deg)}.spark{position:absolute;left:74%;top:21%;color:var(--gold);font-size:25px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:clamp(16px,3vw,26px);box-shadow:0 4px 14px #274b7010}.card p,.intro p{color:var(--muted);margin-top:5px}.entry,.login,#dashboard>.card,.result{margin-top:16px}.entry h2,.intro h2{margin-bottom:4px}.entry form{margin-top:18px}
+fieldset{border:0;padding:0;margin:0 0 16px;min-width:0}legend{font-weight:800;padding:0;margin-bottom:7px}.options{display:grid;gap:8px}.groups{grid-template-columns:repeat(6,minmax(0,1fr))}.names{grid-template-columns:repeat(4,minmax(0,1fr));max-width:500px;min-height:44px}.names p{grid-column:1/-1}.choice{position:relative;cursor:pointer}.choice span{min-height:45px;display:grid;place-items:center;border:1px solid var(--line);border-radius:10px;background:#f6faff;font-weight:800}.choice input:checked+span{background:var(--pale);color:#104075;border-color:#225b94;box-shadow:inset 0 0 0 1px #225b94}.choice input:focus-visible+span{outline:3px solid #bc6000;outline-offset:2px}.visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.primary,.secondary{min-height:44px;padding:8px 15px;border-radius:10px;font-weight:800;border:1px solid var(--blue);line-height:1.35}.primary{background:var(--blue);color:#fff}.primary:not(:disabled):hover{background:#11365f}.secondary{color:var(--blue);background:#fff;border-color:#afc4dc}.secondary:not(:disabled):hover{background:#edf5ff}.text-button{border:0;background:none;color:var(--blue);font-weight:800;padding:8px}.text-button:hover{text-decoration:underline}
+.notice,.note{padding:10px 13px;background:#e4effb;border-left:4px solid #457bbb;border-radius:8px;margin:12px 0}.notice{background:#fff1d8;border-left-color:#b56b19;color:#633c12}.identity,.row,.result,.gate,.records-head,.dialog-head{display:flex;align-items:center;justify-content:space-between;gap:12px}.identity{margin:13px 0 8px;font-weight:800}.steps{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:17px}.step{display:flex;align-items:center;gap:7px;min-height:48px;text-decoration:none;font-weight:800;border:1px solid var(--line);border-radius:10px;padding:8px 12px;background:#fff;color:var(--ink)}.step[aria-current=page]{background:var(--navy);color:white}.step b{display:grid;place-items:center;width:24px;height:24px;flex:none;border-radius:50%;background:#dceaff;color:#153c62}.step[aria-current=page] b{background:var(--gold)}.pill{border-radius:18px;padding:3px 7px;font-size:.73rem;white-space:nowrap;background:#fff0d8;color:#6c400c}.pill.open{background:#dcf4eb;color:#0b5f55}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}.intro{margin-bottom:14px}.timer .symbol{display:grid;place-items:center;flex:none;border-radius:10px;background:#e1f5f3;color:#075c54;width:40px;height:40px;font-size:22px}.timer:last-child .symbol{background:#fff0d6;color:#785015}.clock{display:block;text-align:center;padding:9px;margin:12px 0;border-radius:10px;background:#eef5fb;font:800 clamp(2rem,5vw,3rem)/1.3 ui-monospace,monospace;font-variant-numeric:tabular-nums;color:#153b5f}.actions{display:flex;gap:8px;flex-wrap:wrap}.actions .start{flex:1}.manual{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:11px;font-weight:750}.manual span+span{display:flex;gap:7px;align-items:center}input:not([type=radio]):not([type=file]),select{min-height:41px;border:1px solid #b1c5d9;border-radius:8px;padding:6px 9px;color:var(--ink);background:#fff}input[type=number]{width:105px}.center{text-align:center}.center .secondary,.upload .actions{margin-top:11px}.drawing ol{padding-left:1.4rem;margin:10px 0 0}.drawing li+li{margin-top:5px}.upload img,dialog img{display:block;max-width:100%;max-height:62vh;margin-top:9px;border-radius:8px;object-fit:contain}.upload img{max-height:260px}.msg{font-size:.9rem;font-weight:750;color:var(--green)!important}.msg:empty{display:none}.msg.error{color:#a03131!important}
+.login{display:grid;gap:8px;max-width:440px}.login label{font-weight:750}.gate .pill{margin-left:5px}.table-wrap{overflow:auto;margin-top:12px}table{border-collapse:collapse;width:100%;min-width:570px;text-align:left;font-variant-numeric:tabular-nums}th,td{padding:8px 9px;border-bottom:1px solid var(--line);white-space:nowrap}th{background:#eaf2fa}#logout{margin-top:8px}dialog{max-width:min(90vw,850px);max-height:90vh;color:var(--ink);border:1px solid var(--line);border-radius:15px}dialog::backdrop{background:#101d32bb}.footer{border-top:1px solid var(--line);padding:13px 0 23px;color:var(--muted);font-size:.85rem}.skip{position:absolute;left:10px;top:-100px;background:white;padding:8px}.skip:focus{top:10px;z-index:10}
+@media(max-width:650px){.frame{width:calc(100% - 26px)}main{padding-top:14px}.hero{padding:23px 17px;min-height:213px}.hero p{max-width:19ch}.art{left:40%;opacity:.75}.glass{width:87px;height:90px}.spoon{height:115px}.cube-a{width:33px;height:33px}.cube-b{width:24px;height:24px}.groups{grid-template-columns:repeat(3,minmax(0,1fr))}.grid{grid-template-columns:1fr}.result,.gate,.records-head{align-items:flex-start;flex-direction:column}.step{padding-inline:6px;font-size:.88rem;gap:4px}.step b{width:21px;height:21px}.step .pill{font-size:.64rem;padding-inline:4px}}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">跳到主要內容</a>
+<header class="top"><div class="frame"><a class="brand" id="home" href="./"><span class="logo" aria-hidden="true">◇</span>科學實驗室</a><a id="role" href="?teacher=1">教師操作平台 ↗</a></div></header>
+<main class="frame" id="main">
+<section class="hero"><p class="kicker">科學探究 · 溶解</p><h1 id="title">方糖溶解實驗室</h1><p id="subtitle">攪拌和不攪拌，哪一杯的方糖需要較短時間溶解？</p>
+<div class="art" aria-hidden="true"><div class="orbit"></div><div class="spoon"></div><div class="glass"><div class="water"></div><div class="scale"></div><div class="cube cube-c"></div></div><div class="cube cube-a"></div><div class="cube cube-b"></div><span class="spark">✦</span></div></section>
+<p class="notice" id="demo-note" hidden>試用模式 · 使用示例姓名。請在同一瀏覽器開啟學生和教師頁測試，紀錄存於此裝置。</p>
+<section id="entry" class="card entry" hidden><h2>選擇你的組別</h2><p>選好組別和姓名的最後一個字，就可以開始。</p>
+<form id="entry-form"><fieldset><legend>組別</legend><div id="groups" class="options groups"></div></fieldset><fieldset id="name-field" disabled><legend>姓名最後一個字</legend><div id="names" class="options names"><p>請先選擇組別。</p></div></fieldset><button id="enter" class="primary" disabled>進入實驗 →</button></form></section>
+<section id="activity" hidden><div class="identity"><span id="identity"></span><button class="text-button" id="switch">切換學生</button></div>
+<nav class="steps" aria-label="實驗活動"><a class="step" id="tab-timer" href="?activity=timer"><b>1</b>攪拌計時</a><a class="step" id="tab-design" href="?activity=design"><b>2</b>水溫探究 <small id="gate-label" class="pill">已鎖定</small></a></nav>
+<section id="timer-page"><div class="intro"><h2 tabindex="-1" id="timer-title">攪拌與不攪拌</h2><p>方糖碰到水時開始，看到方糖完全溶解時停止。</p></div>
+<p class="note"><strong>公平測試</strong>　兩杯用相同的水量、水溫、杯子和方糖，只改變是否攪拌。</p><div id="timers" class="grid"></div>
+<div class="card result"><div><h3>實驗結果</h3><p id="comparison">記下兩個時間，就可以比較。</p><p id="time-msg" class="msg" role="status"></p></div><button class="primary" id="save-times" disabled>儲存時間</button></div></section>
+<section id="design-page" hidden><div class="intro"><h2 tabindex="-1" id="design-title">水溫探究</h2><p>你會怎樣比較方糖在熱水和冷水中溶解的速度？</p></div>
+<div id="locked" class="card center"><h3>等候老師開放</h3><p id="lock-msg" role="status">老師開放後，這一頁會自動更新。</p><button id="check" class="secondary">更新開放狀態</button></div>
+<div id="design" class="grid" hidden><div class="card drawing"><h3>在紙上畫出你的實驗設計</h3><ol><li>畫出兩個實驗裝置，標示熱水和冷水。</li><li>寫出哪些條件要保持相同，讓測試公平。</li><li>寫下何時開始和停止計時，以及怎樣比較結果。</li></ol></div>
+<div class="card upload"><h3>拍下你的設計圖</h3><p>把紙放平，讓整張設計圖都拍得清楚。</p><img id="preview" alt="設計圖預覽" hidden>
+<input class="visually-hidden" id="camera" aria-label="拍攝設計圖" type="file" accept="image/*" capture="environment" tabindex="-1"><input class="visually-hidden" id="gallery" aria-label="選擇相片" type="file" accept="image/*" tabindex="-1">
+<div class="actions"><button class="secondary" id="take">拍照</button><button class="secondary" id="choose">選擇相片</button><button class="primary" id="send" disabled>上傳設計圖</button></div><p id="photo-msg" class="msg" role="status"></p></div></div></section>
+</section>
+<section id="teacher" hidden><form id="login" class="card login"><h2>老師登入</h2><label for="password">教師密碼</label><input id="password" type="password" autocomplete="current-password" required><button class="primary">登入</button><p id="login-msg" class="msg" role="status"></p></form>
+<div id="dashboard" hidden><div class="card gate"><div><h2>第 2 頁 · 水溫探究 <span id="teacher-gate" class="pill">讀取中</span></h2><p>開放後，所有組別都可進入第二頁並上傳設計圖。</p><p id="gate-msg" class="msg" role="status"></p></div><button class="primary" id="toggle-gate" disabled>讀取中</button></div>
+<section class="card"><div class="records-head"><div><h2>學生紀錄</h2><p id="count"></p></div><div class="actions"><select id="filter" aria-label="按組別篩選"><option value="">全部組別</option></select><button id="refresh" class="secondary">更新紀錄</button></div></div><p id="records-msg" class="msg" role="status"></p><div class="table-wrap"><table><thead><tr><th scope="col">組別</th><th scope="col">學生</th><th scope="col">攪拌（秒）</th><th scope="col">不攪拌（秒）</th><th scope="col">較快溶解</th><th scope="col">設計圖</th></tr></thead><tbody id="records"></tbody></table></div></section><button class="text-button" id="logout">登出教師平台</button></div>
+</section></main>
+<template id="timer-template"><article class="card timer"><div class="row"><div><h3></h3><p></p></div><span class="symbol" aria-hidden="true"></span></div><div class="clock">00:00.00</div><div class="actions"><button class="primary start">開始計時</button><button class="secondary reset">歸零</button></div><label class="manual"><span>記錄時間</span><span><input type="number" min="0.01" max="3600" step="0.01" inputmode="decimal" placeholder="0.00"><span>秒</span></span></label></article></template>
+<dialog id="dialog"><div class="dialog-head"><h2>探究設計圖</h2><form method="dialog"><button class="secondary">關閉</button></form></div><p id="dialog-msg" class="msg" role="status"></p><img id="teacher-photo" alt="學生畫的水溫探究設計圖" hidden></dialog>
+<footer class="frame footer">ivan’s learning-explorer</footer>
+<script type="module">
+const el = id => document.getElementById(id);
+const query = new URLSearchParams(location.search);
+const supplied = (new URLSearchParams(location.hash.slice(1)).get('class') || '').split('.').map(group => Array.from(group));
+const counts = [3,3,3,3,4,3];
+const validRoster = supplied.length === 6 && supplied.every(
+  (group,index) => group.length === counts[index] && group.every(char => /^\p{Script=Han}$/u.test(char))
+);
+const isTeacher = query.has('teacher');
+let config;
+if (validRoster) {
+  try { config = await import('./connect.js'); } catch {}
+}
+const demo = !config;
+const placeholder = ['甲','乙','丙','丁'];
+const roster = counts.flatMap((count,group) => Array.from({length:count},(_,index) => ({
+  group:group+1, id:(group+1)*10+index+1, initial:demo ? placeholder[index] : supplied[group][index]
+})));
+const draftPrefix = demo ? 'sugar-demo-draft-' : 'sugar-live-draft-';
+const classHash = !demo ? '#class=' + encodeURIComponent(supplied.map(group => group.join('')).join('.')) : '';
+const link = (params = '') => './' + params + classHash;
+const maxCs = 360000;
+const network = '暫時無法連線，請稍後再試。';
+const seconds = value => value == null ? '—' : (value/100).toFixed(2);
+function winner(first,second) {
+  if (first == null || second == null) return '';
+  if (first === second) return '用時相同';
+  return first < second ? '攪拌' : '不攪拌';
+}
+function message(id,text,error=false) {
+  const target = el(id);
+  target.textContent=text;
+  target.classList.toggle('error',error);
+}
+function read(key,fallback,storage=localStorage) {
+  try { return JSON.parse(storage.getItem(key)) ?? fallback; } catch { return fallback; }
+}
+function store(key,value,storage=localStorage) {
+  storage.setItem(key,JSON.stringify(value));
+}
+function saveDraft(key,value,storage=localStorage) {
+  try { store(key,value,storage); } catch {}
+}
+function option(container,name,value,text) {
+  const label=document.createElement('label');
+  label.className='choice';
+  const input=document.createElement('input');
+  input.type='radio'; input.name=name; input.value=value; input.className='visually-hidden';
+  const caption=document.createElement('span');
+  caption.textContent=text;
+  label.append(input,caption);
+  container.append(label);
+}
+function demoCall(action,data) {
+  const gateKey='sugar-demo-open-v1';
+  const entriesKey='sugar-demo-results-v1';
+  const opened=read(gateKey,false);
+  if(action==='status') return {open:opened};
+  if(action==='gate') {
+    store(gateKey,data.open);
+    return {open:data.open};
+  }
+  const entries=read(entriesKey,{});
+  const row=entries[data.device] ?? {id:data.device,student:data.student};
+  if(action==='student_read') return row;
+  if(action==='list') return {open:opened,rows:Object.values(entries).map(({photo,...entry})=>entry)};
+  if(action==='photo') return {photo:entries[data.id]?.photo};
+  if(action==='save_times') Object.assign(row,{stirred:data.stirred,still:data.still,timeAt:new Date().toISOString()});
+  if(action==='save_photo') {
+    if(!opened) throw new Error('locked');
+    Object.assign(row,{photo:data.photo,photoAt:new Date().toISOString()});
+  }
+  entries[data.device]=row;
+  store(entriesKey,entries);
+  return {ok:true,photoAt:row.photoAt};
+}
+async function call(action,data={}) {
+  if(demo) return demoCall(action,data);
+  const response=await fetch(config.apiUrl,{
+    method:'POST',
+    headers:{'Content-Type':'application/json',apikey:config.publishableKey},
+    body:JSON.stringify({action,data}),signal:AbortSignal.timeout(16000)
+  });
+  if(!response.ok) throw new Error('network');
+  const result=await response.json();
+  if(result.error) throw new Error(result.error);
+  return result;
+}
+el('home').href=link();
+el('role').href=link(isTeacher ? '' : '?teacher=1');
+el('demo-note').hidden=!demo;
+
+function studentApp() {
+  let person=null;
+  let draft=null;
+  let saving=false;
+  let opening=false;
+  let open=false;
+  let photo='';
+  let photoSequence=0;
+  let busyPhoto=false;
+  let selected=null;
+  let gateSequence=0;
+  const activeKey=draftPrefix+'active';
+  const definitions=[
+    {key:'stirred',title:'攪拌',hint:'放入方糖後，以穩定速度攪拌。',symbol:'↻'},
+    {key:'still',title:'不攪拌',hint:'放入方糖後，讓水保持靜止。',symbol:'≋'}
+  ];
+  const timers=definitions.map(item=>{
+    const card=el('timer-template').content.firstElementChild.cloneNode(true);
+    card.querySelector('h3').textContent=item.title;
+    card.querySelector('p').textContent=item.hint;
+    card.querySelector('.symbol').textContent=item.symbol;
+    const start=card.querySelector('.start'),reset=card.querySelector('.reset');
+    const input=card.querySelector('input'),clock=card.querySelector('.clock');
+    input.setAttribute('aria-label',item.title+'記錄時間（秒）');
+    el('timers').append(card);
+    const timer={key:item.key,start,reset,input,clock};
+    start.addEventListener('click',()=>{
+      const trial=draft[item.key];
+      if(trial.started) stop(trial);
+      else trial.started=Date.now();
+      change();
+    });
+    reset.addEventListener('click',()=>{
+      draft[item.key]={};
+      change();
+    });
+    input.addEventListener('input',()=>{
+      draft[item.key].value=input.validity.valid && Number.isFinite(input.valueAsNumber)
+        ? Math.round(input.valueAsNumber*100) : null;
+      persist();
+      draw(false);
+      message('time-msg',input.value && !input.validity.valid ? '請輸入 0.01 至 3600 秒，最多兩位小數。' : '',true);
+    });
+    return timer;
+  });
+  function persist() { saveDraft(draftPrefix+person.id,draft); }
+  function elapsed(started) {return Math.min(maxCs,Math.max(1,Math.round((Date.now()-started)/10)));}
+  function stop(trial) {
+    trial.value=elapsed(trial.started);
+    delete trial.started;
+  }
+  function pad(value) {return String(value).padStart(2,'0');}
+  function clockText(cs) {return pad(Math.floor(cs/6000))+':'+pad(Math.floor(cs/100)%60)+'.'+pad(cs%100);}
+  function tick() {
+    if(!draft) return;
+    for(const timer of timers) {
+      const trial=draft[timer.key];
+      if(!trial.started) continue;
+      const cs=elapsed(trial.started);
+      timer.clock.textContent=clockText(cs);
+      if(cs===maxCs) {stop(trial);change();}
+    }
+  }
+  function measurements() {
+    return Object.fromEntries(timers.map(timer=>[timer.key,draft[timer.key].started ? null : draft[timer.key].value]));
+  }
+  function draw(sync=true) {
+    for(const timer of timers) {
+      const trial=draft[timer.key];
+      timer.start.textContent=trial.started ? '停止並記錄' : '開始計時';
+      timer.start.disabled=saving;
+      timer.reset.disabled=saving;
+      timer.input.disabled=saving || !!trial.started;
+      timer.clock.textContent=clockText(trial.started ? elapsed(trial.started) : (trial.value ?? 0));
+      if(sync) timer.input.value=trial.value == null ? '' : seconds(trial.value);
+    }
+    const {stirred,still}=measurements();
+    const result=winner(stirred,still);
+    el('comparison').textContent=!result ? '記下兩個時間，就可以比較。' : result==='用時相同'
+      ? '兩杯的方糖用時相同。' : result+'的方糖較快溶解，相差 '+seconds(Math.abs(stirred-still))+' 秒。';
+    el('save-times').disabled=saving || !result;
+    el('switch').disabled=saving || busyPhoto;
+  }
+  function change() {persist();draw();message('time-msg','');}
+  function updateGate(value,failed=false) {
+    open=value;
+    el('gate-label').textContent=value ? '已開放' : failed ? '待確認' : '已鎖定';
+    el('gate-label').classList.toggle('open',value);
+    el('locked').hidden=value;
+    el('design').hidden=!value;
+    el('lock-msg').textContent=failed ? '暫時無法確認開放狀態，請再試。' : '老師開放後，這一頁會自動更新。';
+    updateUpload();
+  }
+  function updateUpload() {
+    el('send').disabled=!photo || !open || busyPhoto;
+    el('take').disabled=busyPhoto;
+    el('choose').disabled=busyPhoto;
+    el('switch').disabled=busyPhoto || saving;
+  }
+  async function checkGate() {
+    if(!person || opening) return;
+    opening=true;
+    const sequence=++gateSequence;
+    try {
+      const result=await call('status');
+      if(sequence===gateSequence) updateGate(result.open);
+    } catch {
+      if(sequence===gateSequence) updateGate(false,true);
+    } finally {
+      if(sequence===gateSequence) opening=false;
+    }
+  }
+  function showActivity(activity,focus=false) {
+    const design=activity==='design';
+    el('timer-page').hidden=design;
+    el('design-page').hidden=!design;
+    el('tab-timer').setAttribute('aria-current',design?'false':'page');
+    el('tab-design').setAttribute('aria-current',design?'page':'false');
+    if(focus) el(design?'design-title':'timer-title').focus();
+    if(design) checkGate();
+  }
+  function clearPhoto() {
+    photoSequence++;
+    photo='';
+    el('preview').hidden=true;
+    el('preview').removeAttribute('src');
+    updateUpload();
+  }
+  function enter(pupil,focus) {
+    person=pupil;
+    draft=read(draftPrefix+person.id,null) ?? {device:crypto.randomUUID(),stirred:{},still:{}};
+    persist();
+    const current=draft;
+    saveDraft(activeKey,person.id,sessionStorage);
+    el('entry').hidden=true;
+    el('activity').hidden=false;
+    el('identity').textContent='第 '+person.group+' 組 · '+person.initial;
+    message('time-msg','');message('photo-msg','');clearPhoto();
+    draw();
+    showActivity(new URLSearchParams(location.search).get('activity'),focus);
+    checkGate();
+    call('student_read',{student:person.id,device:draft.device}).then(result=>{
+      if(draft===current && result.photoAt && !photo && !busyPhoto) message('photo-msg','已有一張設計圖紀錄。');
+    }).catch(()=>{});
+  }
+  function showEntry() {
+    el('entry-form').reset();
+    el('names').replaceChildren();
+    const prompt=document.createElement('p');prompt.textContent='請先選擇組別。';
+    el('names').append(prompt);
+    el('name-field').disabled=true;
+    el('enter').disabled=true;
+    selected=null;
+    el('entry').hidden=false;
+  }
+  for(let group=1;group<=6;group++) option(el('groups'),'group',group,'第 '+group+' 組');
+  el('groups').addEventListener('change',event=>{
+    selected=null;
+    el('enter').disabled=true;
+    el('names').replaceChildren();
+    el('name-field').disabled=false;
+    roster.filter(item=>item.group===Number(event.target.value)).forEach(item=>option(el('names'),'student',item.id,item.initial));
+  });
+  el('names').addEventListener('change',event=>{
+    selected=roster.find(item=>item.id===Number(event.target.value));
+    el('enter').disabled=!selected;
+  });
+  el('entry-form').addEventListener('submit',event=>{event.preventDefault();if(selected) enter(selected,true);});
+  el('switch').addEventListener('click',()=>{
+    if(timers.some(timer=>draft[timer.key].started) && !confirm('秒錶仍在計時。要停止計時並切換學生嗎？')) return;
+    for(const timer of timers) if(draft[timer.key].started) stop(draft[timer.key]);
+    persist();
+    saveDraft(activeKey,null,sessionStorage);
+    draft=null;person=null;opening=false;gateSequence++;
+    clearPhoto();updateGate(false);
+    el('activity').hidden=true;
+    showEntry();
+    el('groups').querySelector('input').focus();
+  });
+  for(const activity of ['timer','design']) {
+    const tab=el('tab-'+activity);
+    tab.href=link('?activity='+activity);
+    tab.addEventListener('click',event=>{
+      if(event.ctrlKey||event.metaKey||event.shiftKey||event.altKey) return;
+      event.preventDefault();
+      if(new URLSearchParams(location.search).get('activity')!==activity) history.pushState({},'',tab.href);
+      showActivity(activity,true);
+    });
+  }
+  addEventListener('popstate',()=>{if(person) showActivity(new URLSearchParams(location.search).get('activity'));});
+  el('save-times').addEventListener('click',async()=>{
+    const values=measurements();
+    saving=true;draw(false);message('time-msg','正在儲存…');
+    try {
+      await call('save_times',{student:person.id,device:draft.device,...values});
+      message('time-msg',demo?'兩個時間已存到此瀏覽器。':'兩個時間已儲存，老師可以查看。');
+    } catch {message('time-msg','暫未儲存成功，請再按一次儲存。',true);}
+    finally {saving=false;draw(false);}
+  });
+  el('take').addEventListener('click',()=>el('camera').click());
+  el('choose').addEventListener('click',()=>el('gallery').click());
+  for(const id of ['camera','gallery']) el(id).addEventListener('change',async event=>{
+    const file=event.target.files[0];
+    event.target.value='';
+    if(!file) return;
+    busyPhoto=true;
+    const sequence=++photoSequence;
+    message('photo-msg','正在讀取相片…');updateUpload();
+    try {
+      const jpeg=await toJpeg(file);
+      if(sequence!==photoSequence) return;
+      photo=jpeg;
+      el('preview').src=photo;el('preview').hidden=false;
+      message('photo-msg','檢查相片後，按「上傳設計圖」。');
+    } catch {
+      clearPhoto();
+      message('photo-msg','未能讀取相片。請重新拍攝或選擇 JPG、PNG。',true);
+    } finally {busyPhoto=false;updateUpload();}
+  });
+  el('send').addEventListener('click',async()=>{
+    if(!open || !photo || busyPhoto) return;
+    busyPhoto=true;updateUpload();message('photo-msg','正在上傳…');
+    try {
+      await call('save_photo',{student:person.id,device:draft.device,photo:photo.split(',')[1]});
+      photo='';
+      message('photo-msg',demo?'設計圖已存到此瀏覽器。':'上傳成功，老師已收到你的設計圖。');
+    } catch(error) {
+      if(error.message==='locked') updateGate(false);
+      message('photo-msg',error.message==='locked'?'老師已鎖定第二頁，請等候再開放。':'還未上傳成功，請再試。',true);
+    } finally {busyPhoto=false;updateUpload();}
+  });
+  el('check').addEventListener('click',checkGate);
+  addEventListener('focus',checkGate);
+  addEventListener('storage',event=>{if(demo && event.key==='sugar-demo-open-v1') checkGate();});
+  setInterval(tick,50);
+  setInterval(checkGate,4000);
+  const saved=roster.find(item=>item.id===read(activeKey,null,sessionStorage));
+  if(saved) enter(saved,false); else showEntry();
+}
+async function toJpeg(file) {
+  if(file.size>35*1024*1024) throw new Error('photo');
+  const url=URL.createObjectURL(file);
+  try {
+    const image=new Image();
+    image.src=url;
+    await image.decode();
+    const scale=Math.min(1,(demo?950:1800)/Math.max(image.naturalWidth,image.naturalHeight));
+    const canvas=document.createElement('canvas');
+    canvas.width=Math.max(1,Math.round(image.naturalWidth*scale));
+    canvas.height=Math.max(1,Math.round(image.naturalHeight*scale));
+    const context=canvas.getContext('2d');
+    context.fillStyle='#fff';context.fillRect(0,0,canvas.width,canvas.height);
+    context.drawImage(image,0,0,canvas.width,canvas.height);
+    for(const quality of [0.84,0.72,0.58,0.43]) {
+      const jpeg=canvas.toDataURL('image/jpeg',quality);
+      if(jpeg.startsWith('data:image/jpeg;base64,') && jpeg.length<(demo?400000:1580000)) return jpeg;
+    }
+    throw new Error('photo');
+  } finally {URL.revokeObjectURL(url);}
+}
+function teacherApp() {
+  document.title='教師操作平台｜方糖溶解實驗室';
+  el('title').textContent='教師操作平台';
+  el('subtitle').textContent='控制水溫探究的開放狀態，查看各組的計時和設計圖。';
+  el('role').textContent='學生入口 ↗';
+  el('teacher').hidden=false;
+  let token='',open=null,rows=[],busy=false,version=0;
+  function drawGate() {
+    const badge=el('teacher-gate');
+    badge.textContent=open===null?'讀取中':open?'已開放':'已鎖定';
+    badge.classList.toggle('open',open===true);
+    el('toggle-gate').textContent=open===null?'讀取中':open?'鎖定第二頁':'開放第二頁';
+    el('toggle-gate').disabled=busy || open===null;
+    el('refresh').disabled=busy;
+  }
+  function drawRecords() {
+    el('records').replaceChildren();
+    const group=Number(el('filter').value);
+    const visible=roster.filter(person=>!group||group===person.group);
+    let times=0,photos=0;
+    for(const person of visible) {
+      const entries=rows.filter(item=>item.student===person.id);
+      if(entries.some(item=>item.timeAt)) times++;
+      if(entries.some(item=>item.photoAt)) photos++;
+      for(const item of entries.length?entries:[{}]) {
+        const row=document.createElement('tr');
+        for(const value of ['第 '+person.group+' 組',person.initial,seconds(item.stirred),seconds(item.still),winner(item.stirred,item.still)||'—']) {
+          const cell=document.createElement('td');cell.textContent=value;row.append(cell);
+        }
+        const cell=document.createElement('td');
+        if(item.photoAt) {
+          const button=document.createElement('button');
+          button.className='secondary';button.textContent='查看設計圖';
+          button.addEventListener('click',()=>viewPhoto(item,person));
+          cell.append(button);
+        } else cell.textContent='—';
+        row.append(cell);el('records').append(row);
+      }
+    }
+    el('count').textContent=times+' / '+visible.length+' 人已記錄時間 · '+photos+' 人已交設計圖';
+  }
+  function invalidSession(error,id) {
+    if(error.message==='teacher') {
+      token='';rows=[];open=null;drawRecords();
+      if(el('dialog').open) el('dialog').close();
+      el('dashboard').hidden=true;el('login').hidden=false;
+      message('login-msg','登入已逾時，請重新登入。',true);
+    } else message(id,network,true);
+  }
+  async function refresh() {
+    if(busy || (!token && !demo)) return;
+    busy=true;drawGate();
+    try {
+      const result=await call('list',{token});
+      open=result.open;rows=result.rows;
+      drawRecords();message('records-msg','');
+    } catch(error) {invalidSession(error,'records-msg');}
+    finally {busy=false;drawGate();}
+  }
+  async function viewPhoto(item,person) {
+    const id=++version;
+    el('teacher-photo').hidden=true;
+    el('dialog').querySelector('h2').textContent='第 '+person.group+' 組 · '+person.initial+' 的設計圖';
+    el('dialog').showModal();
+    message('dialog-msg','正在讀取…');
+    try {
+      const result=await call('photo',{token,id:item.id});
+      if(id!==version || !el('dialog').open) return;
+      if(!result.photo) throw new Error('photo');
+      el('teacher-photo').src='data:image/jpeg;base64,'+result.photo;
+      el('teacher-photo').hidden=false;message('dialog-msg','');
+    } catch(error) {if(id===version) invalidSession(error,'dialog-msg');}
+  }
+  el('dialog').addEventListener('close',()=>{version++;el('teacher-photo').removeAttribute('src');});
+  el('login').addEventListener('submit',async event=>{
+    event.preventDefault();
+    const button=event.target.querySelector('button');
+    button.disabled=true;
+    try {
+      const result=await call('login',{password:el('password').value});
+      token=result.token;
+      el('password').value='';
+      el('login').hidden=true;el('dashboard').hidden=false;
+      message('login-msg','');
+      await refresh();
+    } catch(error) {
+      message('login-msg',error.message==='password'?'密碼不正確。':error.message==='rate'?'已達嘗試上限，請等候五分鐘。':network,true);
+    } finally {button.disabled=false;}
+  });
+  el('toggle-gate').addEventListener('click',async()=>{
+    if(busy || open===null) return;
+    busy=true;drawGate();
+    try {
+      const result=await call('gate',{token,open:!open});
+      open=result.open;
+      message('gate-msg',open?'第二頁已開放。':'第二頁已鎖定。');
+    } catch(error) {invalidSession(error,'gate-msg');}
+    finally {busy=false;drawGate();}
+  });
+  el('filter').addEventListener('change',drawRecords);
+  for(let group=1;group<=6;group++) el('filter').add(new Option('第 '+group+' 組',group));
+  el('refresh').addEventListener('click',refresh);
+  el('logout').addEventListener('click',async()=>{
+    if(busy) return;
+    const oldToken=token;
+    token='';rows=[];open=null;drawRecords();
+    el('dashboard').hidden=true;el('login').hidden=false;
+    try {await call('logout',{token:oldToken});} catch {}
+  });
+  if(demo) {
+    el('login').hidden=true;el('dashboard').hidden=false;el('logout').hidden=true;
+    addEventListener('storage',event=>{if(event.key?.startsWith('sugar-demo-')) refresh();});
+    refresh();
+  }
+}
+if(isTeacher) teacherApp(); else studentApp();
+</script>
+</body>
+</html>
