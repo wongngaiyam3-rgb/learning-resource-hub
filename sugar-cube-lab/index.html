@@ -24,10 +24,11 @@ fieldset{border:0;padding:0;margin:0 0 16px;min-width:0}legend{font-weight:800;p
 <body>
 <a class="skip" href="#main">跳到主要內容</a>
 <header class="top"><div class="frame"><a class="brand" id="home" href="./"><span class="logo" aria-hidden="true">◇</span>科學實驗室</a><a id="role" href="?teacher=1">教師操作平台 ↗</a></div></header>
-<main class="frame" id="main">
+<main class="frame" id="main" tabindex="-1">
 <section class="hero"><p class="kicker">科學探究 · 溶解</p><h1 id="title">方糖溶解實驗室</h1><p id="subtitle">攪拌和不攪拌，哪一杯的方糖需要較短時間溶解？</p>
 <div class="art" aria-hidden="true"><div class="orbit"></div><div class="spoon"></div><div class="glass"><div class="water"></div><div class="scale"></div><div class="cube cube-c"></div></div><div class="cube cube-a"></div><div class="cube cube-b"></div><span class="spark">✦</span></div></section>
 <p class="notice" id="demo-note" hidden>試用模式 · 使用示例姓名。請在同一瀏覽器開啟學生和教師頁測試，紀錄存於此裝置。</p>
+<section id="connect-warning" class="card entry" hidden><h2>暫時未能開啟課堂</h2><p>請重新載入，或使用老師提供的完整課堂連結。</p></section>
 <section id="entry" class="card entry" hidden><h2>選擇你的組別</h2><p>選好組別和姓名的最後一個字，就可以開始。</p>
 <form id="entry-form"><fieldset><legend>組別</legend><div id="groups" class="options groups"></div></fieldset><fieldset id="name-field" disabled><legend>姓名最後一個字</legend><div id="names" class="options names"><p>請先選擇組別。</p></div></fieldset><button id="enter" class="primary" disabled>進入實驗 →</button></form></section>
 <section id="activity" hidden><div class="identity"><span id="identity"></span><button class="text-button" id="switch">切換學生</button></div>
@@ -52,23 +53,25 @@ fieldset{border:0;padding:0;margin:0 0 16px;min-width:0}legend{font-weight:800;p
 <script type="module">
 const el = id => document.getElementById(id);
 const query = new URLSearchParams(location.search);
-const supplied = (new URLSearchParams(location.hash.slice(1)).get('class') || '').split('.').map(group => Array.from(group));
+const classroom = new URLSearchParams(location.hash.slice(1));
+const room = classroom.get('room') || '';
+const supplied = (classroom.get('class') || '').split('.').map(group => Array.from(group));
 const counts = [3,3,3,3,4,3];
 const validRoster = supplied.length === 6 && supplied.every(
   (group,index) => group.length === counts[index] && group.every(char => /^\p{Script=Han}$/u.test(char))
 );
 const isTeacher = query.has('teacher');
+const demo = !classroom.has('room') && !classroom.has('class');
 let config;
-if (validRoster) {
+if (!demo && validRoster && /^[0-9a-f]{40}$/.test(room)) {
   try { config = await import('./connect.js'); } catch {}
 }
-const demo = !config;
 const placeholder = ['甲','乙','丙','丁'];
 const roster = counts.flatMap((count,group) => Array.from({length:count},(_,index) => ({
-  group:group+1, id:(group+1)*10+index+1, initial:demo ? placeholder[index] : supplied[group][index]
+  group:group+1, id:(group+1)*10+index+1, initial:validRoster && !demo ? supplied[group][index] : placeholder[index]
 })));
-const draftPrefix = demo ? 'sugar-demo-draft-' : 'sugar-live-draft-';
-const classHash = !demo ? '#class=' + encodeURIComponent(supplied.map(group => group.join('')).join('.')) : '';
+const draftPrefix = demo ? 'sugar-demo-draft-' : 'sugar-live-draft-' + room.slice(0,12) + '-';
+const classHash = demo ? '' : location.hash;
 const link = (params = '') => './' + params + classHash;
 const maxCs = 360000;
 const network = '暫時無法連線，請稍後再試。';
@@ -130,7 +133,7 @@ async function call(action,data={}) {
   const response=await fetch(config.apiUrl,{
     method:'POST',
     headers:{'Content-Type':'application/json',apikey:config.publishableKey},
-    body:JSON.stringify({action,data}),signal:AbortSignal.timeout(16000)
+    body:JSON.stringify({action,data:{...data,room}}),signal:AbortSignal.timeout(16000)
   });
   if(!response.ok) throw new Error('network');
   const result=await response.json();
@@ -140,6 +143,10 @@ async function call(action,data={}) {
 el('home').href=link();
 el('role').href=link(isTeacher ? '' : '?teacher=1');
 el('demo-note').hidden=!demo;
+document.querySelector('.skip').addEventListener('click',event=>{
+  event.preventDefault();
+  el('main').focus();
+});
 
 function studentApp() {
   let person=null;
@@ -200,7 +207,8 @@ function studentApp() {
       const trial=draft[timer.key];
       if(!trial.started) continue;
       const cs=elapsed(trial.started);
-      timer.clock.textContent=clockText(cs);
+      const next=clockText(cs);
+      if(timer.clock.textContent!==next) timer.clock.textContent=next;
       if(cs===maxCs) {stop(trial);change();}
     }
   }
@@ -516,7 +524,9 @@ function teacherApp() {
     refresh();
   }
 }
-if(isTeacher) teacherApp(); else studentApp();
+if (!demo && !config) el('connect-warning').hidden=false;
+else if(isTeacher) teacherApp();
+else studentApp();
 </script>
 </body>
 </html>
